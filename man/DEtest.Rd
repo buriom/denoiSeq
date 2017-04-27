@@ -4,7 +4,7 @@
 \alias{DEtest}
 \title{Differential Expression test}
 \usage{
-DEtest(N_A, N_B, cutoff)
+DEtest(N_A, N_B, cutoff = 0.3, rope_limit = 0.5)
 }
 \arguments{
 \item{N_A}{A vector of samples of N_i for condition A.}
@@ -12,12 +12,15 @@ DEtest(N_A, N_B, cutoff)
 \item{N_B}{A vector of samples of N_i for condition B.}
 
 \item{cutoff}{A threshold value that determines the significance of the difference.}
+
+\item{rope-limit}{A float that delimits the range of the region of practical
+equivalance, ROPE.}
 }
 \value{
 A logical value about the significance of difference.
 }
 \description{
-Given two samples of a parameter N_i representing each of the two conditions,
+Given two samples of a parameter N_i from each of the two conditions,
  it determines significance of the differences between the two conditionss based on
  a cutoff value.
 }

@@ -1,8 +1,7 @@
 # _____________________________________________________________________________
 
 # Implementation of the Metrapolis-Hastings
-# algorithm for sampling each of the 3 model
-# parameters.
+# algorithm for sampling from each of the full conditionals
 # _____________________________________________________________________________
 
 # Normal Metrapolis-Hastings samplers
@@ -74,7 +73,7 @@ MH_N2 <- function(N_b, f, p, propotns, x, step_size) {
         1/2))
     r <- exp(fullcond_N(N_c, f, p, propotns, x) -
         fullcond_N(N_b, f, p, propotns, x))
-    # tuning to obtain 42% acceptance rate
+    # tuning to obtain around 42% acceptance rate
     if (u2 < r) {
         N_a <- N_c
         step_size <- step_size * 1.01
@@ -97,10 +96,10 @@ MH_p2 <- function(N, f, p_b, propotns, x, step_size) {
         step_size * (1 - p_b), log = TRUE))
     if (u < r) {
         p_a <- p_c
-        step_size <- step_size * 1.01
+        step_size <- step_size / 1.01
     } else {
         p_a <- p_b
-        step_size <- step_size/1.007
+        step_size <- step_size * 1.007
     }
     return(c(p_a, step_size))
 }
@@ -117,10 +116,10 @@ MH_f2 <- function(N, f_b, p, propotns, x, step_size) {
         step_size * (1 - f_b), log = TRUE))
     if (u < r) {
         f_a <- f_c
-        step_size <- step_size * 1.01
+        step_size <- step_size / 1.01
     } else {
         f_a <- f_b
-        step_size <- step_size/1.007
+        step_size <- step_size * 1.007
     }
     return(c(f_a, step_size))
 }

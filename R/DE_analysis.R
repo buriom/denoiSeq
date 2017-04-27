@@ -11,62 +11,89 @@ getp <- function(rezult, step) return(rezult[[1]][[step]]$p)
 getf <- function(rezult, step) return(rezult[[1]][[step]]$f)
 
 
-#' Get samples of a parameter
+#' Get sampled values  of a parameter
 #'
 #' To extract samples of individual parameters from the list output of nstepgibbs
 #' produced by  multiple runs of the gibbs sampler.
 #'
-#' @param parm A string of the parameter name i.e  p, f or transcript name.
+#' @param parm A parameter name string i.e  p, f or transcript name.
 #' @param rezult A list parameter values at each step
-#' @param steps An integer representing number of iterations of the gibbs sampler.
+#' @param steps An integer representing number of iterations of the one step gibbs sampler.
 #' @param condition An integer representing the two experimental conditions; typically, 1 or 2.
 #'
 #' @return A vector of parameter samples
 
-get_samples_of <- function(parm, rezult, steps = length(rezult),
-    condition = 1) {
-    if (parm == "p") {
-        p_samples <- t(lapply(1:steps, getp, rezult = rezult))
-        return(p_samples)
-    } else if (parm == "f") {
-        f_samples <- t(lapply(1:steps, getf, rezult = rezult))
-        return(f_samples)
-    } else if (parm %in% names(rezult[[1]][[1]]$N_A) &
-        condition == 1) {
-        N_Asamples <- t(mapply(getN_A, 1:steps,
-            MoreArgs = list(rezult = rezult)))
-        N <- N_Asamples[, parm]
-        return(N)
-    } else if (parm %in% names(rezult[[1]][[1]]$N_B) &
-        condition == 2) {
-        N_Bsamples <- t(mapply(getN_B, 1:steps,
-            MoreArgs = list(rezult = rezult)))
-        N <- N_Bsamples[, parm]
-        return(N)
-    } else {
-        print("Unknown parameter")
-    }
-}
+# #' @export
+# get_samples_of <- function(parm, rezult, steps = length(rezult$samples),
+#     condition = 1) {
+#     if(is.character(parm)){
+#       if (parm == "p") {
+#       p_samples <- t(lapply(1:steps, getp, rezult = rezult))
+#       return(unlist(p_samples))
+#     } else if (parm == "f") {
+#       f_samples <- t(lapply(1:steps, getf, rezult = rezult))
+#       return(unlist(f_samples))
+#     } else if (parm %in% names(rezult[[1]][[1]]$N_A) &
+#                condition == 1) {
+#       N_Asamples <- t(mapply(getN_A, 1:steps,
+#                              MoreArgs = list(rezult = rezult)))
+#       N <- N_Asamples[, parm]
+#       return(unlist(N))
+#     }
+#      else if (parm %in% names(rezult[[1]][[1]]$N_B) &
+#                condition == 2) {
+#       N_Bsamples <- t(mapply(getN_B, 1:steps,
+#                              MoreArgs = list(rezult = rezult)))
+#       N <- N_Bsamples[, parm]
+#       return(unlist(N))
+#      }
+#       else {
+#         print("Unknown parameter")
+#       }
+#     }
+#     else if(!is.character(parm)){
+#       if (condition == 1) {
+#         N_Asamples <- t(mapply(getN_A, 1:steps,
+#                                MoreArgs = list(rezult = rezult)))
+#         N <- N_Asamples[, parm]
+#         return(unlist(N))
+#
+#       } else if(condition ==2){
+#         N_Bsamples <- t(mapply(getN_B, 1:steps,
+#                                MoreArgs = list(rezult = rezult)))
+#         N <- N_Bsamples[, parm]
+#         return(unlist(N))
+#       }
+#       else {
+#         print("Unknown parameter")
+#       }
+#     }
+#
+# }
+#
+
 
 #' Differential Expression test
 #'
-#' Given two samples of a parameter N_i representing each of the two conditions,
+#' Given two samples of a parameter N_i from each of the two conditions,
 #'  it determines significance of the differences between the two conditionss based on
 #'  a cutoff value.
 #'
 #' @param N_A A vector of samples of N_i for condition A.
 #' @param N_B A vector of samples of N_i for condition B.
-#' @param cutoff A threshold value that determines the significance of the difference.
-#'
+# @param cutoff A threshold value that determines the significance of the difference.
+#' @param rope-limit A float that delimits the range of the region of practical
+#'  equivalance, ROPE.
 #' @return A logical value about the significance of difference.
 
-DEtest <- function(N_A, N_B, cutoff) {
+#' @export
+DEtest <- function(N_A, N_B, rope_limit=0.5) {
     # log2 difference of samples of the same
     # parameter across the 2 conditions
     dif <- log2(N_A) - log2(N_B)
     # region of practical equivalence
-    rope <- sum(dif > -0.5 & dif < 0.5)
-    return((rope/length(N_A)) < cutoff)
+    rope <- sum(dif > -rope_limits & dif < rope_limits)
+    return(rope/length(N_A))
 }
 
 #' Differential Expression Analysis based on a bottom up model
@@ -80,15 +107,30 @@ DEtest <- function(N_A, N_B, cutoff) {
 #'
 #' @return A logival vector highlighting significantly expressed transcripts.
 
-DE_analys <- function(steps, burnin, rezult, cutoff) {
-    N_Asamples <- t(mapply(getN_A, 1:steps, MoreArgs = list(rezult = rezult)))
-    N_Bsamples <- t(mapply(getN_B, 1:steps, MoreArgs = list(rezult = rezult)))
-    N_Asamples <- tail(N_Asamples, steps - burnin)
-    N_Bsamples <- tail(N_Bsamples, steps - burnin)
-    m <- ncol(N_Asamples)
-    values <- mapply(DEtest, split(t(N_Asamples),
-        1:m), split(t(N_Bsamples), 1:m), cutoff = cutoff)
-    sgf_values <- (colnames(N_Bsamples))[values ==
-        TRUE]
-    return(sgf_values)
+#' @export
+# DE_analys <- function(steps, burnin, rezult, rope_limits = 0.5) {
+#     N_Asamples <- t(mapply(getN_A, 1:steps, MoreArgs = list(rezult = rezult)))
+#     N_Bsamples <- t(mapply(getN_B, 1:steps, MoreArgs = list(rezult = rezult)))
+#     N_Asamples <- tail(N_Asamples, steps - burnin)
+#     N_Bsamples <- tail(N_Bsamples, steps - burnin)
+#     m <- ncol(N_Asamples)
+#     values <- mapply(DEtest, split(t(N_Asamples),
+#         1:m), split(t(N_Bsamples), 1:m), rope_limits = rope_limits )
+#     sgf_values <- (colnames(N_Bsamples))[values ==
+#         TRUE]
+#     return(sgf_values)
+# }
+#
+results <- function(rezult, steps, burnin = steps/3,  rope_limits = 0.5) {
+  N_Asamples <- t(mapply(getN_A, 1:steps, MoreArgs = list(rezult = rezult)))
+  N_Bsamples <- t(mapply(getN_B, 1:steps, MoreArgs = list(rezult = rezult)))
+  N_Asamples <- tail(N_Asamples, steps - burnin)
+  N_Bsamples <- tail(N_Bsamples, steps - burnin)
+  m <- ncol(N_Asamples)
+  values <- mapply(DEtest, split(t(N_Asamples),
+                                 1:m), split(t(N_Bsamples), 1:m), rope_limits = rope_limits )
+
+  statistic <- (colnames(N_Bsamples))[values == TRUE]
+    return(data.frame(log2FoldChange = rowMeans(N_Asamples)/rowMeans(N_Asamples), stat = statistic))
 }
+

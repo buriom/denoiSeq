@@ -6,7 +6,7 @@ Authors@R: as.person(c(
     "Gershom Buri <buri@aims.edu.gh> [aut, cre]", 
     "Wilfred Ndifon <> [aut]"
   ))
-Description: Given count data from two conditions, it determines which transcripts are differentially expressed across the two      		conditions using Bayesian inference of the parameters of  a bottom up model for PCR amplification derived in http://www.pnas.org/content/109/39/15865.full.
+Description: Given count data from two conditions, it determines which transcripts are differentially expressed across the two conditions using Bayesian inference of the parameters of  a bottom up model for PCR amplification derived in http://www.pnas.org/content/109/39/15865.full.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
