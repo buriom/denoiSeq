@@ -16,24 +16,18 @@ readsData <- setClass(
     init.values   = "list",
     step.sizes   = "list",
     output = "list"
-  ),
+  )
   # Make a function that can test to see if the data is consistent.
   # This is not called if you have an initialize function defined!
-  validity=function(object)
-  {
-    if(sum(object@counts)<0) {
-      return("counts cannot be negative")
-    }
-    return(TRUE)
-  }
 )
 
 #Initializing
 setMethod ("initialize", signature  = "readsData",
            definition = function (.Object,
-                                  replicates,
+
                                   counts,
                                   annotation,
+                                  replicates = list(A = 1:(ncol(counts)/2),B= (ncol(counts)/2+1):ncol(counts)),
                                   step.sizes = list(stepsizeN_A = rep(1, nrow(counts)),
                                                     stepsizeN_B = rep(1,nrow(counts)),
                                                     stepsize_p = 5e+07, stepsize_f = 1e3),
@@ -44,8 +38,23 @@ setMethod ("initialize", signature  = "readsData",
              .Object@step.sizes <- step.sizes
              .Object@annotation <- annotation
              .Object@init.values <- init.values
+             validObject(.Object)
              return (.Object)
            })
+
+validity=function(object)
+{
+  rval <- NULL
+  if( nrow(object@counts) != length(object@annotation) ){
+    return("reads and annotations don't match")
+  }
+  else if(sum(object@counts < 0)>0){
+    return("counts cannot be negative")
+  }
+  else return(TRUE)
+}
+
+setValidity( "readsData",validity)
 
 #method for setting the ouput slot
 setGeneric(name="setoutput",
@@ -154,8 +163,8 @@ setMethod(f="getcounts",
 
 
 replicates <- list(A=1:5,B=6:10)
+load("/home/buri/denoiSeq/data/ERCC.RData")
 annotation <- row.names(ERCC)
 init.values = list(N_A = rep(1, 71),
 N_B = rep(1,71), p = 0.0001, f = 0.01)
-CD <- new("readsData", counts = ERCC,replicates=replicates,annotation = annotation)
-
+CD <- new("readsData", counts = mat,replicates=replicates,annotation = annotation)
