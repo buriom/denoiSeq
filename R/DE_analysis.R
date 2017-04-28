@@ -5,10 +5,22 @@
 
 # To obtain parameter values sampled at each
 # step of Gibbs sampling.
-getN_A <- function(rezult, step) return(rezult[[1]][[step]]$N_A)
-getN_B <- function(rezult, step) return(rezult[[1]][[step]]$N_B)
-getp <- function(rezult, step) return(rezult[[1]][[step]]$p)
-getf <- function(rezult, step) return(rezult[[1]][[step]]$f)
+getN_A <- function(CD, step){
+  rezult <- getoutput(CD)
+  return(rezult[[1]][[step]]$N_A)
+}
+getN_B <- function(CD, step){
+  rezult <- getoutput(CD)
+  return(rezult[[1]][[step]]$N_B)
+}
+getp <- function(CD, step){
+  rezult <- getoutput(CD)
+  return(rezult[[1]][[step]]$p)
+}
+getf <- function(CD, step){
+  rezult <- getoutput(CD)
+  return(rezult[[1]][[step]]$f)
+}
 
 
 #' Get sampled values  of a parameter
@@ -92,7 +104,7 @@ DEtest <- function(N_A, N_B, rope_limit=0.5) {
     # parameter across the 2 conditions
     dif <- log2(N_A) - log2(N_B)
     # region of practical equivalence
-    rope <- sum(dif > -rope_limits & dif < rope_limits)
+    rope <- sum(dif > -rope_limit & dif < rope_limit)
     return(rope/length(N_A))
 }
 
@@ -108,29 +120,18 @@ DEtest <- function(N_A, N_B, rope_limit=0.5) {
 #' @return A logival vector highlighting significantly expressed transcripts.
 
 #' @export
-# DE_analys <- function(steps, burnin, rezult, rope_limits = 0.5) {
-#     N_Asamples <- t(mapply(getN_A, 1:steps, MoreArgs = list(rezult = rezult)))
-#     N_Bsamples <- t(mapply(getN_B, 1:steps, MoreArgs = list(rezult = rezult)))
-#     N_Asamples <- tail(N_Asamples, steps - burnin)
-#     N_Bsamples <- tail(N_Bsamples, steps - burnin)
-#     m <- ncol(N_Asamples)
-#     values <- mapply(DEtest, split(t(N_Asamples),
-#         1:m), split(t(N_Bsamples), 1:m), rope_limits = rope_limits )
-#     sgf_values <- (colnames(N_Bsamples))[values ==
-#         TRUE]
-#     return(sgf_values)
-# }
-#
-results <- function(rezult, steps, burnin = steps/3,  rope_limits = 0.5) {
-  N_Asamples <- t(mapply(getN_A, 1:steps, MoreArgs = list(rezult = rezult)))
-  N_Bsamples <- t(mapply(getN_B, 1:steps, MoreArgs = list(rezult = rezult)))
+results <- function(CD, steps, burnin = floor(steps/3),  rope_limit = 0.5) {
+  N_Asamples <- t(sapply(1:steps,getN_A,CD=CD))
+  N_Bsamples <- t(sapply(1:steps,getN_B,CD=CD))
   N_Asamples <- tail(N_Asamples, steps - burnin)
   N_Bsamples <- tail(N_Bsamples, steps - burnin)
   m <- ncol(N_Asamples)
-  values <- mapply(DEtest, split(t(N_Asamples),
-                                 1:m), split(t(N_Bsamples), 1:m), rope_limits = rope_limits )
-
-  statistic <- (colnames(N_Bsamples))[values == TRUE]
-    return(data.frame(log2FoldChange = rowMeans(N_Asamples)/rowMeans(N_Asamples), stat = statistic))
+  values <- mapply(DEtest, split(t(N_Asamples), 1:m), split(t(N_Bsamples), 1:m), rope_limit = rope_limit )
+  lfc_mat <-   N_Bsamples/N_Asamples
+  lfc_mean <- apply(lfc_mat,2,mean)
+  lfc_SE <- apply(lfc_mat,2,sd)/sqrt(nrow(lfc_mat))
+  df <- data.frame("log2FC(B vs A)" = lfc_mean,lfcSE = lfc_SE, stat = values)
+  rownames(df) <- CD@annotation
+  return(df)
 }
 
