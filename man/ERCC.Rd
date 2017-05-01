@@ -16,8 +16,8 @@
 ERCC
 }
 \description{
-A dataset contains a mixture of spike-in synthetic oligonucleotides that
+A dataset containing a mixture of spike-in synthetic oligonucleotides that
   are mixed into samples A and B at four mixing ratios: 1/2, 2/3, 1 and 4. It has
-  been modified from the original dataset by extracting the zero rows.
+  been modified from the original dataset by extracting the zero containing  rows.
 }
 \keyword{datasets}

@@ -61,7 +61,7 @@ MH_f <- function(N, f_b, p, propotns, x, step_size) {
 
 # ____________________________________________________________________________
 
-# Metrapolis-Hastings modified for tunning the
+# Metrapolis-Hastings modified to tune the
 # step size
 # _____________________________________________________________________________
 # To implement Metrapolis-Hastings for N

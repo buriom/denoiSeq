@@ -1,8 +1,8 @@
 #' ERCC data.
 #'
-#'  A dataset contains a mixture of spike-in synthetic oligonucleotides that
+#'  A dataset containing a mixture of spike-in synthetic oligonucleotides that
 #'   are mixed into samples A and B at four mixing ratios: 1/2, 2/3, 1 and 4. It has
-#'   been modified from the original dataset by extracting the zero rows.
+#'   been modified from the original dataset by extracting the zero containing  rows.
 #'
 #' @format A matrix with 71 rows and 10 columns:
 #' \describe{
@@ -11,4 +11,4 @@
 #' }
 #' @source \url{https://bitbucket.org/soccin/seqc/src/ccd0502ef25422e83b3f208f50f8e252f62f17a3/data/?at=master}
 
-"ERCC" 
+"ERCC"

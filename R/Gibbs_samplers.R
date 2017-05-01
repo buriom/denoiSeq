@@ -1,7 +1,7 @@
 # _____________________________________________________________________________
 
 # Implementation of the Gibbs sampling
-# algorithm to sample from the joint
+# algorithm to sample from the joint posterior
 # distribution of N, p and f.
 # _____________________________________________________________________________
 

@@ -3,7 +3,15 @@
 # Create the base readsData class
 #_______________________________________________________________________________
 
-#To define the new class
+#' An S4 class to represent summarised counts and the output of Bayesian Inference.
+#'
+#' @slot counts  A positive integer matrix containing summarised counts for each
+#'  genomic event (genes, exons, transcripts, etc)  in the two conditions.
+#' @slot geneNames A character vector containing the names of the genomic event.
+#' @slot initValues A list containing initial values for each parameter. Defaulted to \emph{N_A} = rep(1, nrow(counts)),\emph{N_B} = rep(1, nrow(counts)),\emph{p}= 0.0001, \emph{f} = 0.01
+#' @slot stepSizes A list containing step sizes for sampling each parameter. Defaulted to stepsizeN_A = rep(1, nrow(counts)),stepsizeN_B = rep(1, nrow(counts)),stepsize_p= 1e3, stepsizeN_A = 5e7
+#'
+#' @name readsData
 readsData <- setClass(
   # Set the name for the class
   "readsData",
@@ -11,14 +19,12 @@ readsData <- setClass(
   # Define the slots
   slots = c(
     counts = "matrix",
-    annotation = "character",
+    geneNames = "character",
     replicates   = "list",
-    init.values   = "list",
-    step.sizes   = "list",
+    initValues   = "list",
+    stepSizes   = "list",
     output = "list"
   )
-  # Make a function that can test to see if the data is consistent.
-  # This is not called if you have an initialize function defined!
 )
 
 #Initializing
@@ -26,18 +32,18 @@ setMethod ("initialize", signature  = "readsData",
            definition = function (.Object,
 
                                   counts,
-                                  annotation,
+                                  geneNames = rownames(counts),
                                   replicates = list(A = 1:(ncol(counts)/2),B= (ncol(counts)/2+1):ncol(counts)),
-                                  step.sizes = list(stepsizeN_A = rep(1, nrow(counts)),
+                                  stepSizes = list(stepsizeN_A = rep(1, nrow(counts)),
                                                     stepsizeN_B = rep(1,nrow(counts)),
                                                     stepsize_p = 5e+07, stepsize_f = 1e3),
-                                  init.values = list(N_A = rep(1, nrow(counts)),
+                                  initValues = list(N_A = rep(1, nrow(counts)),
             N_B = rep(1,nrow(counts)), p = 0.0001, f = 0.01)){
              .Object@counts <- counts
              .Object@replicates <- replicates
-             .Object@step.sizes <- step.sizes
-             .Object@annotation <- annotation
-             .Object@init.values <- init.values
+             .Object@stepSizes <- stepSizes
+             .Object@geneNames <- geneNames
+             .Object@initValues <- initValues
              validObject(.Object)
              return (.Object)
            })
@@ -45,8 +51,8 @@ setMethod ("initialize", signature  = "readsData",
 validity=function(object)
 {
   rval <- NULL
-  if( nrow(object@counts) != length(object@annotation) ){
-    return("reads and annotations don't match")
+  if( nrow(object@counts) != length(object@geneNames) ){
+    return("reads and geneNamess don't match")
   }
   else if(sum(object@counts < 0)>0){
     return("counts cannot be negative")
@@ -55,116 +61,67 @@ validity=function(object)
 }
 
 setValidity( "readsData",validity)
+#__________________________________________________________
+
+#initValues
+#__________________________________________________________
+
+#' Mutator method for the initValues slot of the readsData object.
+#'
+#' Alters the value of the initValues slot.
+#'
+#' @param theObject a readsData object
+#' @param initval A list of initial values for each parameter.
+#' @return The same readsData object with the initValues slot updated.
+#'
+setGeneric(name="setInitValues",
+           def=function(theObject,initval)
+           {
+             standardGeneric("setInitValues")
+           }
+)
 
 #method for setting the ouput slot
-setGeneric(name="setoutput",
-           def=function(theObject,outputval)
-           {
-             standardGeneric("setoutput")
-           }
-)
-
-setMethod(f="setoutput",
+setMethod(f="setInitValues",
           signature="readsData",
-          definition=function(theObject,outputval)
+          definition=function(theObject,initval)
           {
-            theObject@output <- outputval
+            theObject@initValues <- initval
             return(theObject)
-          }
-)
-
-#method for getting the contents of the output slot
-setGeneric(name="getoutput",
-           def=function(theObject)
-           {
-             standardGeneric("getoutput")
-           }
-)
-
-setMethod(f="getoutput",
-          signature="readsData",
-          definition=function(theObject)
-          {
-            return(theObject@output)
-          }
-)
-#__________________________________________________________
-
-#annotation
-#__________________________________________________________
-#method for setting the annotation slot
-setGeneric(name="setannotation",
-           def=function(theObject,annotval)
-           {
-             standardGeneric("setannotation")
-           }
-)
-
-setMethod(f="setannotation",
-          signature="readsData",
-          definition=function(theObject,annotval)
-          {
-            theObject@annotation <- annotval
-            return(theObject)
-          }
-)
-
-#method for getting the contents of the output slot
-setGeneric(name="getannotation",
-           def=function(theObject)
-           {
-             standardGeneric("getannotation")
-           }
-)
-
-setMethod(f="getannotation",
-          signature="readsData",
-          definition=function(theObject)
-          {
-            return(theObject@annotation)
           }
 )
 #______________________________________________________________
 
-#counts
+#stepSizes
 #_______________________________________________________________
-#method for setting the ouput slot
-setGeneric(name="setcounts",
-           def=function(theObject,countsval)
+#' Mutator method for the stepSizes slot of the readsData object.
+#'
+#' Alters the value of the stepSizes slot.
+#'
+#' @param theObject a readsData object.
+#' @param stepSizesval A list of step sizes for each parameter.
+#' @return The same readsData object with the stepSizes slot updated.
+#'
+setGeneric(name="setStepSizes",
+           def=function(theObject,stepSizesval)
            {
-             standardGeneric("setcounts")
+             standardGeneric("setStepSizes")
            }
 )
 
-setMethod(f="setcounts",
+#method for setting the ouput slot
+setMethod(f="setStepSizes",
           signature="readsData",
-          definition=function(theObject,countsval)
+          definition=function(theObject,stepSizesval)
           {
-            theObject@counts <- countsval
+            theObject@stepSizes <- stepSizesval
             return(theObject)
           }
 )
 
-#method for getting the contents of the output slot
-setGeneric(name="getcounts",
-           def=function(theObject)
-           {
-             standardGeneric("getcounts")
-           }
-)
-
-setMethod(f="getcounts",
-          signature="readsData",
-          definition=function(theObject)
-          {
-            return(theObject@counts)
-          }
-)
-
-
-replicates <- list(A=1:5,B=6:10)
-load("/home/buri/denoiSeq/data/ERCC.RData")
-annotation <- row.names(ERCC)
-init.values = list(N_A = rep(1, 71),
-N_B = rep(1,71), p = 0.0001, f = 0.01)
-CD <- new("readsData", counts = mat,replicates=replicates,annotation = annotation)
+# replicates <- list(A=1:5,B=6:10)
+# load("/home/buri/denoiSeq/data/ERCC.RData")
+# geneNames <- row.names(ERCC)
+# initValues = list(N_A = rep(1, 71),
+# N_B = rep(1,71), p = 0.0001, f = 0.01)
+# CD <- new("readsData", counts = ERCC,geneNames = geneNames,initValues = initValues)

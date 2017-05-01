@@ -3,15 +3,6 @@
 # Implementation of the full conditionals for parameters N, p and f.
 # _____________________________________________________________________________
 
-# @param N A number indicating the initial
-# clonotype number.  @param x A vector of final
-# clonotype numbers.  @param f A vector with
-# same length as x, of downward sampling rates.
-# @param p A number indicating the
-# amplification efficiency.  @param propons The
-# size factors used in normalizing the x in
-# each column of the dataset.
-
 # To calculate the summation in the probability
 # distribution
 summation_term <- function(N, f, p, propotns, x) {
