@@ -6,19 +6,19 @@
 # To obtain parameter values sampled at each
 # step of Gibbs sampling.
 getN_A <- function(step,RD){
-  rezult <- getoutput(RD)
+  rezult <- RD@output
   return(rezult[[1]][[step]]$N_A)
 }
 getN_B <- function(step,RD){
-  rezult <- getoutput(RD)
+  rezult <- RD@output
   return(rezult[[1]][[step]]$N_B)
 }
 getp <- function(step,RD){
-  rezult <- getoutput(RD)
+  rezult <- RD@output
   return(rezult[[1]][[step]]$p)
 }
 getf <- function(step,RD){
-  rezult <- getoutput(RD)
+  rezult <- RD@output
   return(rezult[[1]][[step]]$f)
 }
 

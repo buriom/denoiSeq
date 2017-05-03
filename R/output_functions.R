@@ -29,12 +29,12 @@ getSamplesOf <- function(RD, parm, steps,
     } else if (parm == "f") {
       f_samples <- t(lapply(1:steps, getf, RD = RD))
       return(unlist(f_samples))
-    } else if (parm %in% getGeneNames(RD) &
+    } else if (parm %in% RD@geneNames &
                condition == "A") {
       N <- N_Asamples[, parm]
       return(unlist(N))
     }
-     else if (parm %in% getGeneNames(RD) &
+     else if (parm %in% RD@geneNames &
                condition == "B") {
       N <- N_Bsamples[, parm]
       return(unlist(N))
@@ -72,7 +72,7 @@ getSamplesOf <- function(RD, parm, steps,
 #' @export
 #'
 tunedStepSize <- function(RD ){
-  rezult <- getOutput(RD)
+  rezult <- RD@output
   tune <- length(rezult[[2]])
   return (rezult[[2]][[tune]])
 }

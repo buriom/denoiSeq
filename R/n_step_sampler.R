@@ -40,7 +40,7 @@ size_factors <- function(counts) {
 #'  stepsize which  contains the tuned step sizes.
 
 #' @export
-denoiSeq <- function(RD,steps, tuningSteps = floor(steps/3)) {
+denoiseq <- function(RD,steps, tuningSteps = floor(steps/3)) {
   #unpacking the counts
   counts <- RD@counts
   m = nrow(counts)
@@ -54,9 +54,9 @@ denoiSeq <- function(RD,steps, tuningSteps = floor(steps/3)) {
   # normalizing the counts
   propotns <- size_factors(counts)
   #initialising a list for the initial values
-  parm_samples <- list(RD@init.values)
+  parm_samples <- list(RD@initValues)
   #initialising a list for the step sizes
-  stepsize_vectr <- list(RD@step.sizes)
+  stepsize_vectr <- list(RD@stepSizes)
   #tuning
   for (i in 2:tuningSteps) {
     results <- gibbsampling2(counts, counts_A,
