@@ -2,12 +2,12 @@
 % Please edit documentation in R/DE_analysis.R
 \name{results}
 \alias{results}
-\title{Differential Expression Analysis based on a bottom up model}
+\title{Extract results from denoiseq analysis}
 \usage{
-results(RD, steps, burnin = floor(steps/3), rope_limit = 0.5)
+results(RDobject, steps, burnin = floor(steps/3), rope_limit = 0.5)
 }
 \arguments{
-\item{RD}{A readsData object with the output slot filled.}
+\item{RDobject}{A readsData object with the output slot filled.}
 
 \item{steps}{An integer representing the number of iterations.}
 
@@ -20,5 +20,16 @@ equivalance, ROPE. A default value of 0.5 is used.}
 A dataframe with 3 columns namely; the log2 fold change (log2FC), the standard error of the log2 fold change (lgfcSE) and the test static (stat).
 }
 \description{
-To extract the results of Bayesian inference returned by denoiSeq function.
+To extract the results of Bayesian inference returned by denoiSeq function and
+ computes the summary and test statistics.
+}
+\examples{
+#pre -filtering to remove lowly expressed genes
+ERCC <- ERCC[rowSums(ERCC)>10,]
+RD <- new('readsData',counts = ERCC)
+steps <- 100
+#100 steps are not adequate. Just for demonstration here.
+BI <- denoiseq(RD,steps)
+rez <- results(BI,steps)
+head(rez)
 }

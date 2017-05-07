@@ -3,7 +3,7 @@
 \docType{data}
 \name{ERCC}
 \alias{ERCC}
-\title{ERCC data.}
+\title{ERCC dataset}
 \format{A matrix with 92 rows and 10 columns:
 \describe{
   \item{Conditions}{There are 5 columns for each of the conditions A and B.}
@@ -16,7 +16,7 @@
 ERCC
 }
 \description{
-A dataset containing a mixture of spike-in synthetic oligonucleotides that
+RNA-seq data from bioilogical replicates of 3 cell lines. This dataset containing a mixture of spike-in synthetic oligonucleotides that
   are mixed into samples A and B at four mixing ratios: 1/2, 2/3, 1 and 4.
 }
 \keyword{datasets}

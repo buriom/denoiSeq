@@ -4,10 +4,10 @@
 \alias{getSamplesOf}
 \title{Get sampled values  of a parameter}
 \usage{
-getSamplesOf(RD, parm, steps, condition = "A")
+getSamplesOf(RDobject, parm, steps, condition = "A")
 }
 \arguments{
-\item{RD}{A readsData object with a filled output slot.}
+\item{RDobject}{A readsData object with a filled output slot.}
 
 \item{parm}{A parameter name string i.e  p, f or transcript name.}
 
@@ -21,4 +21,15 @@ A vector of parameter samples
 \description{
 To extract samples of individual parameters contianed in the  output slot
 produced by  denoiSeq.
+}
+\examples{
+#pre -filtering to remove lowly expressed genes
+ERCC <- ERCC[rowSums(ERCC)>10,]
+RD <- new('readsData',counts = ERCC)
+steps <- 100
+100 steps are not adequate. Just for demonstration here.
+BI <- denoiseq(RD,steps)
+samples <- getSamplesOf(BI,'ERCC-00051',steps)
+plot(samples,type='l', main = 'History plot of ERCC-00051')
+
 }

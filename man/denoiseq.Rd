@@ -2,17 +2,17 @@
 % Please edit documentation in R/n_step_sampler.R
 \name{denoiseq}
 \alias{denoiseq}
-\title{To estimate model parameters for PCR sequencing using Bayesian Inference.}
+\title{Differential expression analysis based on a bottom up model (a superposition of a binomial and negative binomial distribution)}
 \usage{
-denoiseq(RD, steps, tuningSteps = floor(steps/3))
+denoiseq(RDobject, steps, tuningSteps = floor(steps/3))
 }
 \arguments{
-\item{RD}{A readsData object with atleast the counts slot filled.}
+\item{RDobject}{A readsData object with atleast the counts slot filled.}
 
 \item{steps}{An integer representing the number of iterations.}
 
 \item{tuningSteps}{An integer representing the number of iterations to be
-used for tuning the step sizes.}
+used for tuning the step sizes. Defaulted to a third of steps.}
 }
 \value{
 The same readsData object but with the output slot filled by a  list of 2 lists; a list named samples which contains parameter samples
@@ -25,8 +25,17 @@ Uses the Gibb's sampling algorithm to sample from the joint distribution of the 
 \details{
 The counts in each column are used to estimate the size factors which are
 in turn used to normalise the counts. The function then uses the
-rows of the matrix to estimate parameter N_i for each transcript and uses the
-entire dataset (combined from both conditions)  to estimate \code{p} and
+rows of the matrix to estimate parameter N_i for each gene and gene information sharing (the
+entire dataset combined from both conditions)  to estimate \code{p} and
 \code{f}. The result is an estimate for each of the \code{m} \code{N_i}
 parameters for each condition and estimates for \code{p} and \code{f}.
+}
+\examples{
+#pre -filtering to remove lowly expressed genes
+ERCC <- ERCC[rowSums(ERCC)>10,]
+RD <- new('readsData',counts = ERCC)
+steps <- 100
+#100 steps are not adequate. Just for demonstration here.
+BI <- denoiseq(RD,steps)
+
 }

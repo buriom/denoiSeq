@@ -2,17 +2,27 @@
 % Please edit documentation in R/output_functions.R
 \name{tunedStepSize}
 \alias{tunedStepSize}
-\title{Get tuned values of the step size.}
+\title{Get  values of the tuned step sizes.}
 \usage{
-tunedStepSize(RD)
+tunedStepSize(RDobject)
 }
 \arguments{
-\item{RD}{A readsData object with a filled output slot.}
+\item{RDobject}{A readsData object with a filled output slot.}
 }
 \value{
-A list of the tuned step sizes of each of the parameter.
+A list of the tuned step sizes of all the parameters.
 }
 \description{
-To extract samples of individual parameters contianed in the  output slot
+To extract the tuned step sizes for each parameter from  output slot
 produced by  denoiSeq.
+}
+\examples{
+#pre -filtering to remove lowly expressed genes
+ERCC <- ERCC[rowSums(ERCC)>10,]
+RD <- new('readsData',counts = ERCC)
+steps <- 100
+100 steps are not adequate. Just for demonstration here.
+BI <- denoiseq(RD,steps)
+tunedStepSize(BI)
+
 }

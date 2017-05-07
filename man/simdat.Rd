@@ -3,7 +3,7 @@
 \docType{data}
 \name{simdat}
 \alias{simdat}
-\title{simulated data.}
+\title{simulated data}
 \format{A matrix with 750 rows and 10 columns:
 \describe{
   \item{Conditions}{There are 5 columns for each of the conditions A and B.}

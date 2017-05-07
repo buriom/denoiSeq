@@ -2,7 +2,7 @@
 title: "denoiSeq: Differential expression analysis using a bottom up approach"
 author: "Gershom Buri"
 date: "`r Sys.Date()`"
-output: rmarkdown::pdf_document
+output: rmarkdown::html_vignette
 bibliography: references.bib
 vignette: >
   %\VignetteIndexEntry{denoiSeq}
@@ -19,19 +19,22 @@ devtools::load_all(".")
 
 
 ##Introduction
-In this vignette, we give a brief introduction to the denoiSeq package for  differential expression analysis of RNA and alike data. The statistical details of the methods used can be found in the related publication.
+In this vignette, we give a brief introduction to the denoiSeq package for  differential expression analysis of RNA-Seq and alike data. The statistical details of the methods used can be found in the related publication.
 
-The package only performs a two group comparison and  assumes that the user has the data in the form of a named matrix of integers that contains counts from both groups. Each *i,j* element of this matrix corresponds to counts for gene *i* in sample *j* whereby  *j* has been derived from one of the two groups (conditions), A and B. Prior to analysis, the counts from different samples are normalised in order to be comparable. We then perform differential analysis to determine if there is a signal of significant difference between the counts in the same row for different conditions. In doing so, the primary parameter of interest is *N*.
+The denoiSeq package is based on a bottom up model for PCR amplified sequencing developed by  [@ndifon2012chromatin] which culminates into a  superposition of the binomial and negative binomial as the modelled distribution for the gene counts. Throughout this text, the word gene is synonymous with any genomic event such as exons, transcripts, peptide sequences, etc. The derived distribution has three main parameters, i.e *N, p* and *f* which represent the initial gene amount  before amplification, the amplification efficiency and the dilution rate, respectively. We then use Bayesian inference to estimate the model parameters. Uniform priors are chosen for parameters *p* and *f* and a non informative prior is chosen for *N*.
 
-The package is based on a bottom up model for PCR sequencing developed by  [@ndifon2012chromatin] which culminates into a  superposition of the binomial and negative binomial as the distribution for the counts. This distribution has three main parameters, i.e *N, p* and *f* which represent the initial copy number before amplification, the amplification efficiency and the dilution rate, respectively. Bayesian inference is used to estimate the model parameters. Uniform priors are used for parameters *p* and *f* and a non informative prior is used for *N*.
+
+The package only performs a two group comparison and  assumes that the user has the data in the form of an *m* by *n* matrix of integers that contains counts from both groups. We prefer that the matrix have atleast the rownames but it is not necessary. Each *i,j* element of this matrix corresponds to counts for gene *i* in sample *j* whereby  *j* has been derived from one of the two groups (conditions), i.e A and B. For an *m* by *n* matrix, inference aims at estimating the three sets of parameters, i.e *p*, *f* and *2\*m* *N_i*'s (since we are considering 2 conditions with *m* genes in each). Prior to the  analysis, the counts from different samples are normalised using the estimated size factors [@wolf] in order to make them comparable. We then perform differential analysis to determine if there is a signal of significant difference between the counts in the same row for the two conditions. For  this kind of  analysis, the primary parameters of interest are *N_iA* and *N_iB*.
 
 ##Preparation
-We begin the analysis by creating a readsData object to handle the summarised data. This object has six slots namely; counts, geneNames, replicates, initValues, stepSize and output. The first four slots are specified before the analysis and the latter (output) is used to catch the results of the Bayesian inference and is set inside the `results` function. Before we can create the readsData object, we first load the package and thereafter, the data.
+We begin the analysis by creating a readsData object to handle the summarised data. This object has six slots namely; counts, geneNames, replicates, initValues, stepSize and output. The first four slots are specified before the analysis and the latter (output) is used to catch the results of the Bayesian inference and is set inside the `results` function. 
+Briefly, the counts slot contains the matrix of counts, geneNames contains the names of the genes, replicates contains the column indices for each condition and lastly  initValues and stepSize contain the initial values and step sizes for all parameters to be estimated, respectively.
+
+Before we can create the readsData object, we first load the package.
 ```
 library(denoiSeq)
-load("data/simdat.RData")
 ```
-The simdat dataset contains 750 genes (throughout this document, gene will be used synonymously for any genomic event) with 5 samples for each condition summarised as a 750 by 10 integer matrix. The first half of the genes are not different and the other half are different across the conditions.
+This package is distributed with two datasets; ERCC that contains RNA-seq data and simdat that contains simulated data. In this first example, we will use the  simdat dataset. This dataset  contains 750 observational units  with 5 samples for each condition, summarised as a 750 by 10 integer matrix. The first half of the genes are not different and the other half are different across the conditions.
 ```
 head(simdat)
 ```
@@ -39,64 +42,71 @@ Because Bayesian inference is computationally intensive, users are advised to pe
 ```
 simdat <- simdat[ rowSums(simdat) > 10, ]
 ```
-to eliminate the lowly expressed genes  since it's hard to extract a difference signal in these. A threshold of 10 was chosen to represent one count for a gene in each of the 10 samples but any other appropriate value can be chosen. 
+to eliminate the lowly expressed genes  since as has been reported [@bullard2010evaluation], it is difficult to extract a signal of difference  in these kinds of genes. A threshold of 10 was chosen to represent one count for a gene in each of the 10 samples but any other appropriate value can be chosen. 
 
 We notice that in this case, the count matrix has no gene names and so we have to specify the geneNames slot.
 ```
-genenames <- as.character(1:750)
+genenames <- paste("N",1:750,sep = "_")
 ```
 We then create a readsData object.
 ```
 RD <- new("readsData", counts = simdat,geneNames = genenames)
 ```
-With the exception of  output, all the other slots are set to default values. See the class documentation for details. In the event that  the object has been formed, the default values can be altered using `setReplicates`,`setInitValues` and `setStepSizes` methods.
+With the exception of  output, all the other remaining slots are set to default values. See the class documentation for more details using `?readsData`. In the event that  the object has already been formed, the default values can be altered using the class methods `setReplicates`,`setInitValues` and `setStepSizes` respectively.
 
 ##Bayesian Inference
-Once the readsData is in place, we implement Bayesian inference by calling the `results` function on it and specifying the number of steps for posterior sampling and the number  steps to be used for step size tuning.
+Once the readsData is in place, we implement Bayesian inference by calling the `denoiseq` function on it and specifying the number of steps for posterior sampling and the number  steps to be used for step size tuning.
 ```
 steps <- 100
 tuningSteps <- 30
 BI <- denoiseq(RD, steps, tuningSteps)
 ```
-The tuning steps are defaulted to a third of the sampling steps. `denoiSeq` returns the same readsData object, but with the output slot filled.
+The `denoiSeq` function then returns the same readsData object, but with a filled  output slot.
 
-In this example, the above chunk of code run for about 1.5 minutes on my core i5, 8GB memory PC. We note that 100 steps is a very small number of iterations to attain adequately accurate results. This piece of code is just meant for instruction purposes. Typical runs should have at least 3000 steps which about a third of those used for step size tuning. A smaller dataset is used in the case study below.
+In this example, the above chunk of code run for about 1.5 minutes on my core i5, 8GB memory PC. We note that 100 steps is a very small number of iterations to attain adequately accurate results. This piece of code is just meant for instruction purposes. Typical runs should have at least 3000 steps with about a third of those used for step size tuning. A smaller dataset is used in the case study section below.
 
 ##Differential analysis
-The results of the inference are used to determine differential analysis. This is implemented by the `results` function which returns a data frame with three columns; the log2 fold change (log2FC), the standard error of the log2 fold change (lgfcSE) and the test static (stat), and as many rows as the number of genes.
+The results of the inference are used to determine differential expression. This is achieved  by calling the `results` function, which returns a data frame with three columns; the log2 fold change (log2FC), the standard error of the log2 fold change (lgfcSE) and the test static (stat), and as many rows as the number of genes.
+
+The `results` function has the same arguments as `denoiseq` with an additional `rope_limits` argument which is  defaulted to 0.5. This parameter reflects the extent of fold change that we consider non-significant.
+
 ```
 rez <- results(BI,steps, tuningSteps)
 head(rez)
 ```
-`results` takes the same parameters as `denoiseq` with an additional `rope_limits` parameter, defaulted to 0.5. This parameter reflects the extent of fold change that we consider non-significant.
 
 ##Other functions
-For diagnostic purposes about the behavior of the sampler, the package has the `getSamplesOf` function that takes a parameter name (gene name for the `N_i`s) and returns a vector of samples for it. The other parameters are, a readsData object with a populated output slot, the number of steps of sampling and the condition for the `N_i`s. Instead of a gene name, the function can also take the row index.
+For diagnostics about the behavior of the samples chain generated, the package has the `getSamplesOf` function that takes a model parameter name (i.e p,f,or gene name for any of  the `N_i`s) and returns a vector of samples for it. The other arguments are, a `readsData` object with a populated output slot, the number of steps of sampling and the condition for the `N_i`s. Instead of a gene name, the function can also take the row index of the counts matrix.
 ```
-N50 <- getSamplesOf(BI,"50",steps,condition = "B")
+N_50 <- getSamplesOf(BI,"N_50",steps,condition = "B")
 ```
-With these samples, diagnostics such as plotting a history plot and determining the auto-lag coefficient can be performed.
+or 
+
 ```
-acceptance_rate <- length(unique(N50))/steps
-plot(N50,type="l", main = "History plot of N50")
-AL <- acf(N50, lag.max = 100,type = c("correlation"),plot = T)
+N_50 <- getSamplesOf(BI,50,steps,condition = "B")
 ```
-If one wishes, they can also have a look at the  tuned step sizes using `tunedStepSize`. It takes the output updated readsData object as its only parameter.
+
+With these samples, diagnostics such as evaluating the acceptance rate, plotting a history plot and determining the auto-lag coefficient can be performed.
+```
+acceptance_rate <- length(unique(N_50))/steps
+plot(N_50,type="l", main = "History plot of N_50")
+AL <- acf(N_50, lag.max = 100,type = c("correlation"),plot = T)
+```
+If one wishes, they can also have a look at the  tuned step sizes using `tunedStepSize`. It takes the  readsData object returned by `denoiseq` as its only argument.
 ```
 SS <- tunedStepSize(BI)
 ```
-The return can then be set to the `initValues` slot for another run of Gibbs sampling implemented in `results`.
+The return value can then be set to the `initValues` slot for another run of Gibbs sampling implemented with `denoiseq`.
 
 ##Case study: Analysis of the RNA-Seq Data
 ###Introduction
 In this case study, we will use the ERCC dataset which contains data from biological replicates of three cell lines that were characterised as part of the ENCODE project [@djebali2012landscape]. This dataset contains  mixture of 92 spike-in synthetic oligonucleotides that
    are mixed into samples A and B at four mixing ratios: 1/2, 2/3, 1 and 4. It has five samples for each condition. All other ratios are considered different apart from 1.
 
-###Reading in the data
+###Data preview
 
 
 ```{r, echo=TRUE}
-load("ERCC.RData") 
 dim(ERCC)
 ```
 ```
@@ -115,47 +125,49 @@ dim(ERCC)
 ###Creating the readsData object
 Since the count matrix has row names, the geneNames slot has been set by default.
 ```{r, echo=TRUE}
-reps <- list(A=1:5,B=6:10)
-initvalues = list(N_A = rep(1, dim(ERCC)[1]), N_B = rep(1,dim(ERCC)[1]), p = 0.0001, f = 0.01)
-RD2 <- new("readsData", counts = ERCC,replicates = reps, initValues = initvalues)
+reps <- list(A=c(1,2,3,4,5),B=c(6,7,8,9,10))#specifying the columns for each condition
+m <- dim(ERCC)[1]
+initvalues <- list(N_A = rep(1, m), N_B = rep(1,m), p = 0.0001, f = 0.01)
+stepsizes <- list(stepsizeN_A = rep(1, m),stepsizeN_B = rep(1,m),stepsize_p = 5e+07, stepsize_f = 1e3)
+RD2 <- new("readsData", counts = ERCC,replicates = reps, initValues = initvalues, stepSizes = stepsizes)
 ```
 
 ###Bayesian Inference
-The tuningSteps argument has been set to the default `value  = floor(steps/3)`.
-```{r, echo=TRUE}
+The tuningSteps argument has been set to the default value  `= floor(steps/3)`.
+```{r, eval=FALSE, include=TRUE}
 steps <- 100
 BI2 <- denoiseq(RD2, steps)
 ```
 
 ###Differential expression analysis
-We explicitly set the value for the 'rope_limits' argument.
-```{r, echo=TRUE}
+In this case, we will explicitly set the value for the 'rope_limits' argument.
+```{r, eval=FALSE, include=TRUE}
 rope = 0.5
-rez2 <- results(BI2,steps)
+rez2 <- results(BI2,steps,rope_limit = rope)
 ```
 ```
 head(rez2)
 ```
-```{r}
+```{r, eval=FALSE, include=FALSE}
 knitr::kable(head(rez2))
 ```
 
 A threshold value of the statistic is then chosen to determine significance.
 
 ### Diagnostics
-```{r, echo=TRUE}
+```{r, eval=FALSE, include=TRUE}
 samples <- getSamplesOf(BI2,"ERCC-00051",steps)
 acceptance_rate <- length(unique(samples))/steps
 acceptance_rate
 ```
 
-```{r, fig.show='hold'}
+```{r, eval=FALSE, fig.show='hold', include=TRUE}
 plot(samples,type="l", main = "History plot of ERCC-00051")
 AL <- acf(samples, main = "Auto lag plot of ERCC-00051", lag.max = 100,type = c("correlation"),plot = T)
 ```
 
 ##session info
-```{r,echo=TRUE}
+```{r,echo=TRUE, eval=FALSE, include=FALSE}
 sessionInfo()
 ```
 
