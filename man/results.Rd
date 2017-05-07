@@ -11,7 +11,7 @@ results(RDobject, steps, burnin = floor(steps/3), rope_limit = 0.5)
 
 \item{steps}{An integer representing the number of iterations.}
 
-\item{burnin}{An integer for the number of iterations to be considered as burn in values}
+\item{burnin}{An integer for the number of iterations to be considered as burn in values.}
 
 \item{rope-limit}{A float that delimits the range of the region of practical
 equivalance, ROPE. A default value of 0.5 is used.}
@@ -20,8 +20,16 @@ equivalance, ROPE. A default value of 0.5 is used.}
 A dataframe with 3 columns namely; the log2 fold change (log2FC), the standard error of the log2 fold change (lgfcSE) and the test static (stat).
 }
 \description{
-To extract the results of Bayesian inference returned by denoiSeq function and
+Extracts the results of Bayesian inference returned by denoiSeq function and
  computes the summary and test statistics.
+}
+\details{
+The test statistic is calculated  by first log2 transforming the samples of the relevant parameters
+(i.e N_iA and N_iB), subtracting one sample from the other, and then determining the propotion of this
+distribution of differences that lies in the region of practical equivalence (ROPE). We then select
+ genes whose test statistic value  is below a given threshold as differentially expressed.
+ From simulated data, a typical threshold value is around 0.3. However, one
+ can also arrange the stat column in ascending order and select the most differentially expressed genes.
 }
 \examples{
 #pre -filtering to remove lowly expressed genes
@@ -32,4 +40,9 @@ steps <- 100
 BI <- denoiseq(RD,steps)
 rez <- results(BI,steps)
 head(rez)
+dim(rez)
+#Determine significant genes
+sgf <- rez[rez$stat<0.3]
+head(sgf)
+dim(sgf)
 }

@@ -12,7 +12,7 @@
 #' @param parm A parameter name string i.e  p, f or transcript name.
 #' @param RDobject A readsData object with a filled output slot.
 #' @param steps An integer representing number of iterations of the one step gibbs sampler.
-#' @param condition An character (either  A or B) representing the two experimental conditions.
+#' @param condition A character (either  A or B) representing the two experimental conditions.
 #'
 #' @return A vector of length steps of parameter samples.
 #'
@@ -66,8 +66,7 @@ getSamplesOf <- function(RDobject, parm, steps, condition = "A") {
 
 #' Get  values of the tuned step sizes.
 #'
-#' To extract the tuned step sizes for each parameter from  output slot
-#' produced by  denoiSeq.
+#' To extract the tuned step sizes for each parameter from  the return value of  denoiseq.
 #'
 #' @param RDobject A readsData object with a filled output slot.
 #' @return A list of the tuned step sizes of all the parameters.

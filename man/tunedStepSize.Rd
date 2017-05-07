@@ -13,8 +13,7 @@ tunedStepSize(RDobject)
 A list of the tuned step sizes of all the parameters.
 }
 \description{
-To extract the tuned step sizes for each parameter from  output slot
-produced by  denoiSeq.
+To extract the tuned step sizes for each parameter from  the return value of  denoiseq.
 }
 \examples{
 #pre -filtering to remove lowly expressed genes

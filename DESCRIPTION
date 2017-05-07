@@ -1,7 +1,6 @@
 Package: denoiSeq
 Type: Package
-Title: Differential Expression Analysis Based on a Bottom Up Model (a Superposition of a Binonial and Negative Binomial Distributions).
-
+Title: Differential Expression Analysis Based on a Bottom Up Model (a Superposition of a Binonial and Negative Binomial Distributions)
 Version: 0.1.0
 Authors@R: as.person(c(
     "Gershom Buri <buri@aims.edu.gh> [aut, cre]", 

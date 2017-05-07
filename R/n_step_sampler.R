@@ -15,15 +15,26 @@ size_factors <- function(counts) {
 
 #' Differential expression analysis based on a bottom up model (a superposition of a binomial and negative binomial distribution)
 #'
-#' Uses the Gibb's sampling algorithm to sample from the joint distribution of the model parameters.
+#' The denoiseq function perfoms default analysis by first normalising the counts and then estimating the model
+#' parameters using Bayesian inference. Size factors are estimated from counts matrix and used for the normalisation.
+#' The  Gibb's sampling algorithm is then used to sample from the joint distribution of the model parameters.
 #'
-#' The counts in each column are used to estimate the size factors which are
-#' in turn used to normalise the counts. The function then uses the
+#' The denoiSeq package is based on a bottom up model for PCR amplified sequencing developed by Ndifon et al (2012)
+#'  which culminates into a  superposition of the binomial and negative binomial as the modelled distribution for the gene counts.
+#' The derived distribution has three main parameters, i.e \code{N,p} and \code{f} which represent the initial gene amount  before
+#' amplification, the amplification efficiency and the dilution rate, respectively.
+#'
+#' This package  uses Bayesian inference to
+#'  estimate the model parameters. The counts in each column are used to estimate the size factors (Anders and Huber,2010) which are
+#' in turn used to normalise the counts. For an \code{m} by \code{n} count matrix, we have
+#' \code{2*m} \code{N_i} parameters to estimate (\code{m} for each of the two conditions) in addition to parameters \code{p}
+#' and \code{f}. denoiseq then uses the conditional
 #' rows of the matrix to estimate parameter N_i for each gene and gene information sharing (the
 #' entire dataset combined from both conditions)  to estimate \code{p} and
 #' \code{f}. The result is an estimate for each of the \code{m} \code{N_i}
 #' parameters for each condition and estimates for \code{p} and \code{f}.
 #'
+#' For differential expression analysis, the parameters of interest are the \code{N_i}s.
 #' @param RDobject A readsData object with atleast the counts slot filled.
 #' @param steps  An integer representing the number of iterations.
 #' @param tuningSteps An integer representing the number of iterations to be

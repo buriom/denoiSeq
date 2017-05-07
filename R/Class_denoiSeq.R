@@ -187,10 +187,10 @@ setGeneric(name="setOutput",
 )
 #' Mutator method for the output slot of the readsData object.
 #'
-#' sets the value of the outout slot.
+#' sets the value of the output slot.
 #'
 #' @param object a readsData object.
-#' @param outval A list of the output from bayesian inference.
+#' @param outval A list of the output from Bayesian inference.
 #' @return The same readsData object with the output slot updated.
 #'
 

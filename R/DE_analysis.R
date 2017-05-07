@@ -37,9 +37,16 @@ DEstat <- function(N_A, N_B, rope_limit = 0.5) {
 #' Extracts the results of Bayesian inference returned by denoiSeq function and
 #'  computes the summary and test statistics.
 #'
+#' The test statistic is calculated  by first log2 transforming the samples of the relevant parameters
+#' (i.e N_iA and N_iB), subtracting one sample from the other, and then determining the propotion of this
+#' distribution of differences that lies in the region of practical equivalence (ROPE). We then select
+#'  genes whose test statistic value  is below a given threshold as differentially expressed.
+#'  From simulated data, a typical threshold value is around 0.3. However, one
+#'  can also arrange the stat column in ascending order and select the most differentially expressed genes.
+#'
 #' @param RDobject A readsData object with the output slot filled.
 #' @param steps  An integer representing the number of iterations.
-#' @param burnin An integer for the number of iterations to be considered as burn in values
+#' @param burnin An integer for the number of iterations to be considered as burn in values.
 #' @param rope-limit A float that delimits the range of the region of practical
 #'  equivalance, ROPE. A default value of 0.5 is used.
 #'
@@ -54,6 +61,11 @@ DEstat <- function(N_A, N_B, rope_limit = 0.5) {
 #' BI <- denoiseq(RD,steps)
 #' rez <- results(BI,steps)
 #' head(rez)
+#' dim(rez)
+#' #Determine significant genes
+#' sgf <- rez[rez$stat<0.3]
+#' head(sgf)
+#' dim(sgf)
 #' @export
 results <- function(RDobject, steps, burnin = floor(steps/3), rope_limit = 0.5) {
     N_Asamples <- t(sapply(1:steps, getN_A, RDobject = RDobject))

@@ -10,11 +10,11 @@
 \arguments{
 \item{object}{a readsData object.}
 
-\item{outval}{A list of the output from bayesian inference.}
+\item{outval}{A list of the output from Bayesian inference.}
 }
 \value{
 The same readsData object with the output slot updated.
 }
 \description{
-sets the value of the outout slot.
+sets the value of the output slot.
 }

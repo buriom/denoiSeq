@@ -13,14 +13,14 @@ getSamplesOf(RDobject, parm, steps, condition = "A")
 
 \item{steps}{An integer representing number of iterations of the one step gibbs sampler.}
 
-\item{condition}{An character (either  A or B) representing the two experimental conditions.}
+\item{condition}{A character (either  A or B) representing the two experimental conditions.}
 }
 \value{
-A vector of parameter samples
+A vector of length steps of parameter samples.
 }
 \description{
-To extract samples of individual parameters contianed in the  output slot
-produced by  denoiSeq.
+To extract sampled values of individual parameters contianed in the  output slot of
+the readsData object returned by denoiSeq.
 }
 \examples{
 #pre -filtering to remove lowly expressed genes
