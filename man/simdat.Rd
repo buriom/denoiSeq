@@ -15,7 +15,8 @@ simdat
 \description{
 A dataset containing simulated data based on parameter values N = 1,2,...,50, p = 0.0017
  and f = 0.5. The values of N were repeated 15 times to generate  750 genomic events. The
- first 375 genomic events are not different while the last 375 are different (obtained by reversing
-  the alignment for the second condition to 50,49, . . .,1).
+ first 375 genomic events are strictly not different while the last 375 are a mixture of both
+  non different and  different (obtained by reversing
+  the alignment for the second condition to 50,49, . . .,1, hence values like 25 and 26 are indistinguishable).
 }
 \keyword{datasets}

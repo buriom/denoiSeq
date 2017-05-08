@@ -6,22 +6,22 @@
 
 #' Get sampled values  of a parameter
 #'
-#' To extract sampled values of individual parameters contianed in the  output slot of
+#' Extracts sampled values of individual parameters contianed in the  output slot of
 #' the readsData object returned by denoiSeq.
 #'
 #' @param parm A parameter name string i.e  p, f or transcript name.
 #' @param RDobject A readsData object with a filled output slot.
-#' @param steps An integer representing number of iterations of the one step gibbs sampler.
+#' @param steps An integer representing number of iterations of used while calling denoiseq.
 #' @param condition A character (either  A or B) representing the two experimental conditions.
 #'
-#' @return A vector of length steps of parameter samples.
+#' @return A vector  of parameter samples with length equal to steps.
 #'
 #' @examples
 #' #pre -filtering to remove lowly expressed genes
-#' ERCC <- ERCC[rowSums(ERCC)>10,]
+#' ERCC <- ERCC[rowSums(ERCC)>20,]
 #' RD <- new('readsData',counts = ERCC)
 #' steps <- 100
-#' 100 steps are not adequate. Just for demonstration here.
+#' #100 steps are not adequate. Just for illustration here.
 #' BI <- denoiseq(RD,steps)
 #' samples <- getSamplesOf(BI,'ERCC-00051',steps)
 #' plot(samples,type='l', main = 'History plot of ERCC-00051')
@@ -48,12 +48,12 @@ getSamplesOf <- function(RDobject, parm, steps, condition = "A") {
             print("Unknown parameter")
         }
     } else if (!is.character(parm)) {
-        if (condition == 1) {
+        if (condition == "A") {
             N_Asamples <- t(sapply(1:steps, getN_A, RDobject = RDobject))
             N <- N_Asamples[, parm]
             return(unlist(N))
 
-        } else if (condition == 2) {
+        } else if (condition == "B") {
             N_Bsamples <- t(sapply(1:steps, getN_B, RDobject = RDobject))
             N <- N_Bsamples[, parm]
             return(unlist(N))
@@ -66,16 +66,16 @@ getSamplesOf <- function(RDobject, parm, steps, condition = "A") {
 
 #' Get  values of the tuned step sizes.
 #'
-#' To extract the tuned step sizes for each parameter from  the return value of  denoiseq.
+#' Extracts the tuned step sizes for each parameter from  the return value of  denoiseq.
 #'
 #' @param RDobject A readsData object with a filled output slot.
 #' @return A list of the tuned step sizes of all the parameters.
 #' @examples
 #' #pre -filtering to remove lowly expressed genes
-#' ERCC <- ERCC[rowSums(ERCC)>10,]
+#' ERCC <- ERCC[rowSums(ERCC)>20,]
 #' RD <- new('readsData',counts = ERCC)
 #' steps <- 100
-#' 100 steps are not adequate. Just for demonstration here.
+#' #100 steps are not adequate. Just for illustration here.
 #' BI <- denoiseq(RD,steps)
 #' tunedStepSize(BI)
 #'

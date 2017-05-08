@@ -24,7 +24,7 @@ In this vignette, we give a brief introduction to the denoiSeq package for  diff
 The denoiSeq package is based on a bottom up model for PCR amplified sequencing developed by  [@ndifon2012chromatin] which culminates into a  superposition of the binomial and negative binomial as the modelled distribution for the gene counts. Throughout this text, the word gene is synonymous with any genomic event such as exons, transcripts, peptide sequences, etc. The derived distribution has three main parameters, i.e *N, p* and *f* which represent the initial gene amount  before amplification, the amplification efficiency and the dilution rate, respectively. We then use Bayesian inference to estimate the model parameters. Uniform priors are chosen for parameters *p* and *f* and a non informative prior is chosen for *N*.
 
 
-The package only performs a two group comparison and  assumes that the user has the data in the form of an *m* by *n* matrix of integers that contains counts from both groups. We prefer that the matrix have atleast the rownames but it is not necessary. Each *i,j* element of this matrix corresponds to counts for gene *i* in sample *j* whereby  *j* has been derived from one of the two groups (conditions), i.e A and B. For an *m* by *n* matrix, inference aims at estimating the three sets of parameters, i.e *p*, *f* and *2\*m* *N_i*'s (since we are considering 2 conditions with *m* genes in each). Prior to the  analysis, the counts from different samples are normalised using the estimated size factors [@wolf] in order to make them comparable. We then perform differential analysis to determine if there is a signal of significant difference between the counts in the same row for the two conditions. For  this kind of  analysis, the primary parameters of interest are *N_iA* and *N_iB*.
+The package only performs a two group comparison and  assumes that the user has the data in the form of an *m* by *n* matrix of integers that contains counts from both groups. We prefer that the matrix have atleast the rownames but it is not necessary. Each *i,j* element of this matrix corresponds to counts for gene *i* in sample *j* whereby  *j* has been derived from one of the two groups (conditions), i.e A and B. For an *m* by *n* matrix, inference aims at estimating the three sets of parameters, i.e *p*, *f* and *2\*m* *N_i*'s (since we are considering 2 conditions with *m* genes in each). Prior to the  analysis, the counts from different samples are normalised using the estimated size factors [@wolf] in order to make them comparable. We then perform differential analysis to determine if there is a signal of significant difference between the counts in the same row for the two conditions. For  this kind of  analysis, the primary parameters of interest are *N_iA* and *N_iB*, for each gene *i*.
 
 ##Preparation
 We begin the analysis by creating a readsData object to handle the summarised data. This object has six slots namely; counts, geneNames, replicates, initValues, stepSize and output. The first four slots are specified before the analysis and the latter (output) is used to catch the results of the Bayesian inference and is set inside the `results` function. 
@@ -34,15 +34,15 @@ Before we can create the readsData object, we first load the package.
 ```
 library(denoiSeq)
 ```
-This package is distributed with two datasets; ERCC that contains RNA-seq data and simdat that contains simulated data. In this first example, we will use the  simdat dataset. This dataset  contains 750 observational units  with 5 samples for each condition, summarised as a 750 by 10 integer matrix. The first half of the genes are not different and the other half are different across the conditions.
+This package is distributed with two datasets; ERCC that contains RNA-seq data and simdat that contains simulated data. In this first example, we will use the  simdat dataset. This dataset  contains 750 observational units  with 5 samples for each condition, summarised as a 750 by 10 integer matrix. The first half of the genes are not different and the other half contains some genes that are  different across the two conditions.
 ```
 head(simdat)
 ```
 Because Bayesian inference is computationally intensive, users are advised to perform pre-filtering before creating the readsData object, in order to save time. An example would be
 ```
-simdat <- simdat[ rowSums(simdat) > 10, ]
+simdat <- simdat[ rowSums(simdat) > 20, ]
 ```
-to eliminate the lowly expressed genes  since as has been reported [@bullard2010evaluation], it is difficult to extract a signal of difference  in these kinds of genes. A threshold of 10 was chosen to represent one count for a gene in each of the 10 samples but any other appropriate value can be chosen. 
+to eliminate the lowly expressed genes  since as has been reported [@bullard2010evaluation], it is difficult to extract a signal of difference  in these kinds of genes. A threshold of 20 was chosen to represent two counts for a gene in each of the 10 samples but any other appropriate value can be chosen. 
 
 We notice that in this case, the count matrix has no gene names and so we have to specify the geneNames slot.
 ```
@@ -63,7 +63,7 @@ BI <- denoiseq(RD, steps, tuningSteps)
 ```
 The `denoiSeq` function then returns the same readsData object, but with a filled  output slot.
 
-In this example, the above chunk of code run for about 1.5 minutes on my core i5, 8GB memory PC. We note that 100 steps is a very small number of iterations to attain adequately accurate results. This piece of code is just meant for instruction purposes. Typical runs should have at least 3000 steps with about a third of those used for step size tuning. A smaller dataset is used in the case study section below.
+In this example, the above chunk of code run for about 1.5 minutes on my core i5, 8GB memory PC. We note that 100 steps is a very small number of iterations to attain adequately accurate results. This piece of code is just meant for instruction purposes. At least 3000 steps should be adequate, with about a third of those used for step size tuning (takes about 40 minutes on the same computer). A smaller dataset is used in the case study section below.
 
 ##Differential analysis
 The results of the inference are used to determine differential expression. This is achieved  by calling the `results` function, which returns a data frame with three columns; the log2 fold change (log2FC), the standard error of the log2 fold change (lgfcSE) and the test static (stat), and as many rows as the number of genes.
@@ -76,14 +76,14 @@ head(rez)
 ```
 
 ##Other functions
-For diagnostics about the behavior of the samples chain generated, the package has the `getSamplesOf` function that takes a model parameter name (i.e p,f,or gene name for any of  the `N_i`s) and returns a vector of samples for it. The other arguments are, a `readsData` object with a populated output slot, the number of steps of sampling and the condition for the `N_i`s. Instead of a gene name, the function can also take the row index of the counts matrix.
+For diagnostics about the behavior of the samples chain generated, the package has the `getSamplesOf` function that takes a model parameter name (i.e p,f,or gene name for any of  the `N_i`s) and returns a vector of samples for it. The other arguments are, a `readsData` object with a populated output slot, the number of steps of used in sampling and the condition for the `N_i`s. Instead of a gene name, the function can also take the row index of the counts matrix.
 ```
 N_50 <- getSamplesOf(BI,"N_50",steps,condition = "B")
 ```
 or 
 
 ```
-N_50 <- getSamplesOf(BI,50,steps,condition = "B")
+N_50 <- getSamplesOf(BI,50,steps,condition = "A")
 ```
 
 With these samples, diagnostics such as evaluating the acceptance rate, plotting a history plot and determining the auto-lag coefficient can be performed.
@@ -101,7 +101,7 @@ The return value can then be set to the `initValues` slot for another run of Gib
 ##Case study: Analysis of the RNA-Seq Data
 ###Introduction
 In this case study, we will use the ERCC dataset which contains data from biological replicates of three cell lines that were characterised as part of the ENCODE project [@djebali2012landscape]. This dataset contains  mixture of 92 spike-in synthetic oligonucleotides that
-   are mixed into samples A and B at four mixing ratios: 1/2, 2/3, 1 and 4. It has five samples for each condition. All other ratios are considered different apart from 1.
+   are mixed into samples A and B at four mixing ratios: 1/2, 2/3, 1 and 4. It has five samples for each condition. All genes with conditional ratios other than 1 are considered different.
 
 ###Data preview
 
@@ -118,7 +118,7 @@ knitr::kable(head(ERCC, 4))
 
 ###Pre-filtering
 ```{r, echo=TRUE}
-ERCC <- ERCC[rowSums(ERCC)>10,]
+ERCC <- ERCC[rowSums(ERCC)>20,]
 dim(ERCC)
 ```
 
@@ -134,40 +134,51 @@ RD2 <- new("readsData", counts = ERCC,replicates = reps, initValues = initvalues
 
 ###Bayesian Inference
 The tuningSteps argument has been set to the default value  `= floor(steps/3)`.
-```{r, eval=FALSE, include=TRUE}
+```{r, echo=TRUE}
 steps <- 100
 BI2 <- denoiseq(RD2, steps)
 ```
 
 ###Differential expression analysis
 In this case, we will explicitly set the value for the 'rope_limits' argument.
-```{r, eval=FALSE, include=TRUE}
+```{r, echo=TRUE}
 rope = 0.5
 rez2 <- results(BI2,steps,rope_limit = rope)
 ```
 ```
 head(rez2)
 ```
-```{r, eval=FALSE, include=FALSE}
+```{r, echo=TRUE}
 knitr::kable(head(rez2))
 ```
 
-A threshold value of the statistic is then chosen to determine significance.
-
+A threshold value of the statistic is then chosen to determine significance. This should be close to 0.3 or determined by one arrangin the stat column in ascending order and selecting the most differentially expressed genes.
+```
+#Determine significant genes
+sgf <- rez2[rez2$stat<0.3,]
+head(sgf)
+dim(sgf)
+```
+or
+```
+#Re-ordering according to most differentially expressed
+rez3 <- rez2[with(rez2,order(stat)),]
+head(rez3,10)
+```
 ### Diagnostics
-```{r, eval=FALSE, include=TRUE}
+```{r, echo=TRUE}
 samples <- getSamplesOf(BI2,"ERCC-00051",steps)
 acceptance_rate <- length(unique(samples))/steps
 acceptance_rate
 ```
 
-```{r, eval=FALSE, fig.show='hold', include=TRUE}
+```{r, echo=TRUE, fig.show='hold'}
 plot(samples,type="l", main = "History plot of ERCC-00051")
 AL <- acf(samples, main = "Auto lag plot of ERCC-00051", lag.max = 100,type = c("correlation"),plot = T)
 ```
 
 ##session info
-```{r,echo=TRUE, eval=FALSE, include=FALSE}
+```{r, echo=TRUE}
 sessionInfo()
 ```
 

@@ -21,7 +21,7 @@ for each of  \code{N_i},\code{p} and \code{f}, at each iteration, and a second l
 }
 \description{
 The denoiseq function perfoms default analysis by first normalising the counts and then estimating the model
-parameters using Bayesian inference. Size factors are estimated from counts matrix and used for the normalisation.
+parameters using Bayesian inference. Size factors are estimated from count matrix and used for the normalisation.
 The  Gibb's sampling algorithm is then used to sample from the joint distribution of the model parameters.
 }
 \details{
@@ -35,19 +35,19 @@ This package  uses Bayesian inference to
 in turn used to normalise the counts. For an \code{m} by \code{n} count matrix, we have
 \code{2*m} \code{N_i} parameters to estimate (\code{m} for each of the two conditions) in addition to parameters \code{p}
 and \code{f}. denoiseq then uses the conditional
-rows of the matrix to estimate parameter N_i for each gene and gene information sharing (the
+rows of the matrix to estimate parameter N_i for each gene in each condition, and gene information sharing (the
 entire dataset combined from both conditions)  to estimate \code{p} and
 \code{f}. The result is an estimate for each of the \code{m} \code{N_i}
 parameters for each condition and estimates for \code{p} and \code{f}.
 
-For differential expression analysis, the parameters of interest are the \code{N_i}s.
+For differential expression analysis, the parameters of interest are the \code{N_i}s for each gene, \code{i}.
 }
 \examples{
 #pre -filtering to remove lowly expressed genes
-ERCC <- ERCC[rowSums(ERCC)>10,]
+ERCC <- ERCC[rowSums(ERCC)>20,]
 RD <- new('readsData',counts = ERCC)
 steps <- 100
-#100 steps are not adequate. Just for demonstration here.
+#100 steps are not adequate. Just for illustration here.
 BI <- denoiseq(RD,steps)
 
 }

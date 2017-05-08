@@ -13,14 +13,14 @@ tunedStepSize(RDobject)
 A list of the tuned step sizes of all the parameters.
 }
 \description{
-To extract the tuned step sizes for each parameter from  the return value of  denoiseq.
+Extracts the tuned step sizes for each parameter from  the return value of  denoiseq.
 }
 \examples{
 #pre -filtering to remove lowly expressed genes
-ERCC <- ERCC[rowSums(ERCC)>10,]
+ERCC <- ERCC[rowSums(ERCC)>20,]
 RD <- new('readsData',counts = ERCC)
 steps <- 100
-100 steps are not adequate. Just for demonstration here.
+#100 steps are not adequate. Just for illustration here.
 BI <- denoiseq(RD,steps)
 tunedStepSize(BI)
 

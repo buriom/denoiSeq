@@ -16,7 +16,7 @@ genomic event (genes, exons, transcripts, etc)  in the two conditions.}
 \item{\code{replicates}}{A list containing the indices of the columns in each of the two
 conditions. It is defaulted to A = 1:5, B = 6:10.}
 
-\item{\code{geneNames}}{A character vector containing the names of the genomic event. Is is
+\item{\code{geneNames}}{A character vector containing the names of the genomic event. It is
 appropriately defaulted to names of a the matrix.}
 
 \item{\code{initValues}}{A list containing initial values for each parameter. Defaulted to \emph{N_A} = rep(1, nrow(counts)),\emph{N_B} = rep(1, nrow(counts)),\emph{p}= 0.0001, \emph{f} = 0.01}

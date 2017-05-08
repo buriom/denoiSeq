@@ -11,23 +11,23 @@ getSamplesOf(RDobject, parm, steps, condition = "A")
 
 \item{parm}{A parameter name string i.e  p, f or transcript name.}
 
-\item{steps}{An integer representing number of iterations of the one step gibbs sampler.}
+\item{steps}{An integer representing number of iterations of used while calling denoiseq.}
 
 \item{condition}{A character (either  A or B) representing the two experimental conditions.}
 }
 \value{
-A vector of length steps of parameter samples.
+A vector  of parameter samples with length equal to steps.
 }
 \description{
-To extract sampled values of individual parameters contianed in the  output slot of
+Extracts sampled values of individual parameters contianed in the  output slot of
 the readsData object returned by denoiSeq.
 }
 \examples{
 #pre -filtering to remove lowly expressed genes
-ERCC <- ERCC[rowSums(ERCC)>10,]
+ERCC <- ERCC[rowSums(ERCC)>20,]
 RD <- new('readsData',counts = ERCC)
 steps <- 100
-100 steps are not adequate. Just for demonstration here.
+#100 steps are not adequate. Just for illustration here.
 BI <- denoiseq(RD,steps)
 samples <- getSamplesOf(BI,'ERCC-00051',steps)
 plot(samples,type='l', main = 'History plot of ERCC-00051')

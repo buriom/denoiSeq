@@ -44,29 +44,34 @@ DEstat <- function(N_A, N_B, rope_limit = 0.5) {
 #'  From simulated data, a typical threshold value is around 0.3. However, one
 #'  can also arrange the stat column in ascending order and select the most differentially expressed genes.
 #'
-#' @param RDobject A readsData object with the output slot filled.
+#' @param RDobject A readsData object with a filled output slot.
 #' @param steps  An integer representing the number of iterations.
 #' @param burnin An integer for the number of iterations to be considered as burn in values.
-#' @param rope-limit A float that delimits the range of the region of practical
+#' @param rope_limit A float that delimits the range of the region of practical
 #'  equivalance, ROPE. A default value of 0.5 is used.
 #'
 #' @return A dataframe with 3 columns namely; the log2 fold change (log2FC), the standard error of the log2 fold change (lgfcSE) and the test static (stat).
 #'
 #' @examples
 #' #pre -filtering to remove lowly expressed genes
-#' ERCC <- ERCC[rowSums(ERCC)>10,]
+#' ERCC <- ERCC[rowSums(ERCC)>20,]
 #' RD <- new('readsData',counts = ERCC)
 #' steps <- 100
-#' #100 steps are not adequate. Just for demonstration here.
+#' #100 steps are not adequate. Just for illustration here.
 #' BI <- denoiseq(RD,steps)
 #' rez <- results(BI,steps)
 #' head(rez)
 #' dim(rez)
 #' #Determine significant genes
-#' sgf <- rez[rez$stat<0.3]
+#' sgf <- rez[rez$stat<0.3,]
 #' head(sgf)
 #' dim(sgf)
+#' #Re-ordering according to most differentially expressed
+#' rez <- rez[with(rez,order(stat)),]
+#' head(rez,10)
+#' @importFrom utils tail
 #' @export
+
 results <- function(RDobject, steps, burnin = floor(steps/3), rope_limit = 0.5) {
     N_Asamples <- t(sapply(1:steps, getN_A, RDobject = RDobject))
     N_Bsamples <- t(sapply(1:steps, getN_B, RDobject = RDobject))

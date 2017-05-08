@@ -9,7 +9,7 @@
 #'  genomic event (genes, exons, transcripts, etc)  in the two conditions.
 #' @slot replicates A list containing the indices of the columns in each of the two
 #' conditions. It is defaulted to A = 1:5, B = 6:10.
-#' @slot geneNames A character vector containing the names of the genomic event. Is is
+#' @slot geneNames A character vector containing the names of the genomic event. It is
 #' appropriately defaulted to names of a the matrix.
 #' @slot initValues A list containing initial values for each parameter. Defaulted to \emph{N_A} = rep(1, nrow(counts)),\emph{N_B} = rep(1, nrow(counts)),\emph{p}= 0.0001, \emph{f} = 0.01
 #' @slot stepSizes A list containing step sizes for sampling each parameter. Defaulted to stepsizeN_A = rep(1, nrow(counts)),stepsizeN_B = rep(1, nrow(counts)),stepsize_p= 1e3, stepsizeN_A = 5e7
@@ -33,6 +33,10 @@ readsData <- setClass(
 )
 
 #Initializing
+
+#' @importFrom methods new validObject
+
+
 setMethod ("initialize", signature  = "readsData",
            definition = function (.Object,
 
@@ -70,7 +74,11 @@ setValidity( "readsData",validity)
 
 #initValues
 #__________________________________________________________
-#generic for setting the ouput slot
+#generic for setting the initValues slot
+
+#' Generic  for the initValues slot of the readsData object.
+#' @param object a readsData object
+#' @param initval A list of initial values for all the  parameters.
 
 setGeneric(name="setInitValues",
            def=function(object,initval)
@@ -106,8 +114,12 @@ setMethod(f="setInitValues",
 
 #stepSizes
 #_______________________________________________________________
-#generic for setting the steSizes slot
+#generic for setting the stepSizes slot
 
+#' Generic  for the stepSizes slot of the readsData object.
+#' @param object a readsData object
+#' @param stepSizesval A list of step sizes for all the  parameters.
+#'
 setGeneric(name="setStepSizes",
            def=function(object,stepSizesval)
            {
@@ -140,8 +152,12 @@ setMethod(f="setStepSizes",
 
 #replicates
 #_______________________________________________________________
-#method for setting the ouput slot
+#method for setting the replicates slot
 
+#' Generic  for the replicates slot of the readsData object.
+#' @param object a readsData object
+#' @param repsval A list  of column indices for the samples in each condition.
+#'
 setGeneric(name="setReplicates",
            def=function(object,repsval)
            {
@@ -202,64 +218,3 @@ setMethod(f="setOutput",
             return(object)
           }
 )
-
-# replicates <- list(A=1:5,B=6:10)
-# load("/home/buri/denoiSeq/data/ERCC.RData")
-# geneNames <- row.names(ERCC)
-# initValues = list(N_A = rep(1, 71),
-# N_B = rep(1,71), p = 0.0001, f = 0.01)
-# CD <- new("readsData", counts = ERCC,geneNames = geneNames,initValues = initValues)
-
-# ##not part of package
-# Vignettes  are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
-#
-#   - Never uses retina figures
-# - Has a smaller default figure size
-# - Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-#
-# ## Vignette Info
-#
-# Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-# ```{r}
-# # Add two numbers together
-# add <- function(a, b) a + b
-# add(10, 20)
-# ```
-#
-# ## Styles
-#
-# The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-#
-#   output:
-#   rmarkdown::html_vignette:
-#   css: mystyles.css
-#
-# ## Figures
-#
-# The figure sizes have been customised so that you can easily put two images side-by-side.
-#
-# ```{r, fig.show='hold'}
-# plot(1:10)
-# plot(10:1)
-# ```
-#
-# You can enable figure captions by `fig_caption: yes` in YAML:
-#
-#   output:
-#   rmarkdown::html_vignette:
-#   fig_caption: yes
-#
-# Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-#
-# ## More Examples
-#
-# You can write math expressions, e.g. $Y = X\beta + \epsilon$,  and tables, e.g. using `knitr::kable()`.
-#
-# ```{r, echo=FALSE, results='asis'}
-# knitr::kable(head(mtcars, 10))
-# ```
-#
-# Also a quote using `>`:
-#
-#   > "He who gives up [code] safety for [code] speed deserves neither."
-# ([via](https://twitter.com/hadleywickham/status/504368538874703872))

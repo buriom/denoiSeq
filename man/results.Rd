@@ -7,13 +7,13 @@
 results(RDobject, steps, burnin = floor(steps/3), rope_limit = 0.5)
 }
 \arguments{
-\item{RDobject}{A readsData object with the output slot filled.}
+\item{RDobject}{A readsData object with a filled output slot.}
 
 \item{steps}{An integer representing the number of iterations.}
 
 \item{burnin}{An integer for the number of iterations to be considered as burn in values.}
 
-\item{rope-limit}{A float that delimits the range of the region of practical
+\item{rope_limit}{A float that delimits the range of the region of practical
 equivalance, ROPE. A default value of 0.5 is used.}
 }
 \value{
@@ -33,16 +33,19 @@ distribution of differences that lies in the region of practical equivalence (RO
 }
 \examples{
 #pre -filtering to remove lowly expressed genes
-ERCC <- ERCC[rowSums(ERCC)>10,]
+ERCC <- ERCC[rowSums(ERCC)>20,]
 RD <- new('readsData',counts = ERCC)
 steps <- 100
-#100 steps are not adequate. Just for demonstration here.
+#100 steps are not adequate. Just for illustration here.
 BI <- denoiseq(RD,steps)
 rez <- results(BI,steps)
 head(rez)
 dim(rez)
 #Determine significant genes
-sgf <- rez[rez$stat<0.3]
+sgf <- rez[rez$stat<0.3,]
 head(sgf)
 dim(sgf)
+#Re-ordering according to most differentially expressed
+rez <- rez[with(rez,order(stat)),]
+head(rez,10)
 }

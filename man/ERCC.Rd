@@ -16,7 +16,7 @@
 ERCC
 }
 \description{
-RNA-seq data from bioilogical replicates of 3 cell lines. This dataset containing a mixture of spike-in synthetic oligonucleotides that
+RNA-seq data from bioilogical replicates of 3 cell lines. This dataset contains a mixture of spike-in synthetic oligonucleotides that
   are mixed into samples A and B at four mixing ratios: 1/2, 2/3, 1 and 4.
 }
 \keyword{datasets}
