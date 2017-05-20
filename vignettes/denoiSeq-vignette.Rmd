@@ -11,9 +11,8 @@ vignette: >
 ---
 ```{r "setup", include=FALSE}
 require("knitr")
-opts_knit$set(root.dir = "/home/buri/denoiSeq")
+opts_knit$set(root.dir = ".")
 devtools::load_all(".")
-
 ```
 
 
@@ -40,9 +39,9 @@ head(simdat)
 ```
 Because Bayesian inference is computationally intensive, users are advised to perform pre-filtering before creating the readsData object, in order to save time. An example would be
 ```
-simdat <- simdat[ rowSums(simdat) > 20, ]
+simdat <- simdat[ rowSums(simdat) > 15, ]
 ```
-to eliminate the lowly expressed genes  since as has been reported [@bullard2010evaluation], it is difficult to extract a signal of difference  in these kinds of genes. A threshold of 20 was chosen to represent two counts for a gene in each of the 10 samples but any other appropriate value can be chosen. 
+to eliminate the lowly expressed genes  since as has been reported [@bullard2010evaluation], it is difficult to extract a signal of difference  in these kinds of genes. A threshold of 15 produced the highest AUC (0.847) for an annonated real dataset, hence the choice.
 
 We notice that in this case, the count matrix has no gene names and so we have to specify the geneNames slot.
 ```
@@ -101,7 +100,7 @@ The return value can then be set to the `initValues` slot for another run of Gib
 ##Case study: Analysis of the RNA-Seq Data
 ###Introduction
 In this case study, we will use the ERCC dataset which contains data from biological replicates of three cell lines that were characterised as part of the ENCODE project [@djebali2012landscape]. This dataset contains  mixture of 92 spike-in synthetic oligonucleotides that
-   are mixed into samples A and B at four mixing ratios: 1/2, 2/3, 1 and 4. It has five samples for each condition. All genes with conditional ratios other than 1 are considered different.
+   are mixed into samples A and B at four mixing ratios: 1/2, 2/3, 1 and 4 (more precisely, rows 24 to 46 represent the only non-significant genes). It has five samples for each condition. All genes with conditional ratios other than 1 are considered different.
 
 ###Data preview
 
@@ -117,8 +116,9 @@ knitr::kable(head(ERCC, 4))
 ```
 
 ###Pre-filtering
+We pre-filtered the dataset by selecting rows with a rowsums above 15. This value represents averagely, a  slightly above 1 counts in each column. This threshold is motivated by the fact that the highest AUC (0.847) was  obtained from prior analysis of the same dataset, using a significance  cut off of stat equivalent to 0.38.
 ```{r, echo=TRUE}
-ERCC <- ERCC[rowSums(ERCC)>20,]
+ERCC <- ERCC[rowSums(ERCC)>15,]
 dim(ERCC)
 ```
 
@@ -148,14 +148,14 @@ rez2 <- results(BI2,steps,rope_limit = rope)
 ```
 head(rez2)
 ```
-```{r, echo=TRUE}
+```{r, include=FALSE}
 knitr::kable(head(rez2))
 ```
 
-A threshold value of the statistic is then chosen to determine significance. This should be close to 0.3 or determined by one arrangin the stat column in ascending order and selecting the most differentially expressed genes.
+A threshold value of the statistic is then chosen to determine significance. This should be close to 0.35 or determined by one arranging the stat column in ascending order and selecting the most differentially expressed genes.
 ```
 #Determine significant genes
-sgf <- rez2[rez2$stat<0.3,]
+sgf <- rez2[rez2$stat<0.38,]
 head(sgf)
 dim(sgf)
 ```
