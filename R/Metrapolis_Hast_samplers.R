@@ -10,18 +10,18 @@
 #' @importFrom stats runif median sd dbeta rbeta
 # To implement Metrapolis-Hastings for N
 MH_N <- function(N_b, f, p, propotns, x, step_size) {
-    k <- runif(2, 0, 1)
-    u1 <- k[1]
-    u2 <- k[2]
-    N_c <- exp(log(N_b) + step_size * 2 * (u1 - 1/2))
-    r <- exp(fullcond_N(N_c, f, p, propotns, x) - fullcond_N(N_b, f, p, propotns,
-        x))
-    if (u2 < r) {
-        N_a <- N_c
-    } else {
-        N_a <- N_b
-    }
-    return(N_a)
+  k <- runif(2, 0, 1)
+  u1 <- k[1]
+  u2 <- k[2]
+  N_c <- exp(log(N_b) + step_size * 2 * (u1 - 1/2))
+  r <- exp(fullcond_N(N_c, f, p, propotns, x) - fullcond_N(N_b, f, p, propotns,
+                                                           x))
+  if (is.nan(r) || u2 > r) {
+    N_a <- N_b
+  } else {
+    N_a <- N_c
+  }
+  return(N_a)
 }
 
 # To implement Metrapolis Hastings for p
@@ -60,22 +60,23 @@ MH_f <- function(N, f_b, p, propotns, x, step_size) {
 # _____________________________________________________________________________ To
 # implement Metrapolis-Hastings for N
 MH_N2 <- function(N_b, f, p, propotns, x, step_size) {
-    k <- runif(2, 0, 1)
-    u1 <- k[1]
-    u2 <- k[2]
-    N_c <- exp(log(N_b) + step_size * 2 * (u1 - 1/2))
-    r <- exp(fullcond_N(N_c, f, p, propotns, x) - fullcond_N(N_b, f, p, propotns,
-        x))
-    # tuning to obtain around 42% acceptance rate
-    if (u2 < r) {
-        N_a <- N_c
-        step_size <- step_size * 1.01
-    } else {
-        N_a <- N_b
-        step_size <- step_size/1.007
-    }
-    return(c(N_a, step_size))
+  k <- runif(2, 0, 1)
+  u1 <- k[1]
+  u2 <- k[2]
+  N_c <- exp(log(N_b) + step_size * 2 * (u1 - 1/2))
+  r <- exp(fullcond_N(N_c, f, p, propotns, x) - fullcond_N(N_b, f, p, propotns,
+                                                           x))
+  # tuning to obtain around 42% acceptance rate
+  if (is.nan(r) || u2 > r) {
+    N_a <- N_b
+    step_size <- step_size/1.007
+  } else {
+    N_a <- N_c
+    step_size <- step_size * 1.01
+  }
+  return(c(N_a, step_size))
 }
+
 
 # To implement Metrapolis-Hastings for p
 MH_p2 <- function(N, f, p_b, propotns, x, step_size) {
