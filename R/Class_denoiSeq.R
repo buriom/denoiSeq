@@ -77,6 +77,7 @@ setValidity( "readsData",validity)
 #' Generic  for the initValues slot of the readsData object.
 #' @param object a readsData object
 #' @param initval A list of initial values for all the  parameters.
+#' @keywords internal
 
 setGeneric(name="setInitValues",
            def=function(object,initval)
@@ -117,7 +118,7 @@ setMethod(f="setInitValues",
 #' Generic  for the stepSizes slot of the readsData object.
 #' @param object a readsData object
 #' @param stepSizesval A list of step sizes for all the  parameters.
-#'
+#' @keywords internal
 setGeneric(name="setStepSizes",
            def=function(object,stepSizesval)
            {
@@ -155,7 +156,7 @@ setMethod(f="setStepSizes",
 #' Generic  for the replicates slot of the readsData object.
 #' @param object a readsData object
 #' @param repsval A list  of column indices for the samples in each condition.
-#'
+#' @keywords internal
 setGeneric(name="setReplicates",
            def=function(object,repsval)
            {

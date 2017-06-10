@@ -54,7 +54,7 @@ DEstat <- function(N_A, N_B, rope_limit = 0.5) {
 #'
 #' @examples
 #' #pre -filtering to remove lowly expressed genes
-#' ERCC <- ERCC[rowSums(ERCC)>20,]
+#' ERCC <- ERCC[rowSums(ERCC)>15,]
 #' RD <- new('readsData',counts = ERCC)
 #' steps <- 100
 #' #100 steps are not adequate. Just for illustration here.
@@ -83,7 +83,7 @@ results <- function(RDobject, steps, burnin = floor(steps/3), rope_limit = 0.5) 
     lfc_mat <- N_Bsamples/N_Asamples
     lfc_mean <- apply(lfc_mat, 2, mean)
     lfc_SE <- apply(lfc_mat, 2, sd)/sqrt(nrow(lfc_mat))
-    df <- data.frame(`log2FC(B vs A)` = lfc_mean, lfcSE = lfc_SE, stat = values)
+    df <- data.frame(`log2FC(B vs A)` = lfc_mean, lfcSE = lfc_SE, ROPE_propn = values)
     rownames(df) <- RDobject@geneNames
     return(df)
 }

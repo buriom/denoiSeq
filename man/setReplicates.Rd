@@ -14,3 +14,4 @@ setReplicates(object, repsval)
 \description{
 Generic  for the replicates slot of the readsData object.
 }
+\keyword{internal}

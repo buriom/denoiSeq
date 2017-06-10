@@ -14,3 +14,4 @@ setStepSizes(object, stepSizesval)
 \description{
 Generic  for the stepSizes slot of the readsData object.
 }
+\keyword{internal}

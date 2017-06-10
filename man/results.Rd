@@ -33,7 +33,7 @@ distribution of differences that lies in the region of practical equivalence (RO
 }
 \examples{
 #pre -filtering to remove lowly expressed genes
-ERCC <- ERCC[rowSums(ERCC)>20,]
+ERCC <- ERCC[rowSums(ERCC)>15,]
 RD <- new('readsData',counts = ERCC)
 steps <- 100
 #100 steps are not adequate. Just for illustration here.

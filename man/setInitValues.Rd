@@ -14,3 +14,4 @@ setInitValues(object, initval)
 \description{
 Generic  for the initValues slot of the readsData object.
 }
+\keyword{internal}
