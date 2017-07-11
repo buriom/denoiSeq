@@ -21,7 +21,6 @@ NULL
 readsData <- setClass(
   # Set the name for the class
   "readsData",
-
   # Define the slots
   slots = c(
     counts = "matrix",

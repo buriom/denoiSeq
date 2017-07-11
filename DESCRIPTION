@@ -1,12 +1,12 @@
 Package: denoiSeq
 Type: Package
-Title: Differential Expression Analysis Based on a Bottom Up Model (a Superposition of a Binomial and Negative Binomial Distributions)
+Title: Differential Expression Analysis Using  a Bottom-Up Model (a Superposition of a Binomial and Negative Binomial Distributions)
 Version: 0.1.0
 Authors@R: as.person(c(
     "Gershom Buri <buri@aims.edu.gh> [aut, cre]", 
-    "Wilfred Ndifon <> [aut]"
+    "Wilfred Ndifon <ndifon@gmail.com> [aut]"
   ))
-Description: Given count data from two conditions, it determines which transcripts are differentially expressed across the two conditions using Bayesian inference of the parameters of  a bottom up model for PCR amplification. This model is  developed in the paper titled, "Chromatin conformation governs T cell receptor Jβ gene segment usage," by Wilfred et al, and culminates into the superpostion of the binomial and negative binomial as the modelled distribution for the counts.
+Description: Given count data from two conditions, it determines which transcripts are differentially expressed across the two conditions using Bayesian inference of the parameters of  a bottom-up model for PCR amplification. This model is  developed in "Chromatin conformation governs T cell receptor J beta gene segment usage" by Wilfred et al, and culminates in a distribution for the counts that is a superpostion of the binomial and negative binomial distribution.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -15,7 +15,6 @@ Imports: methods,
     stats,
     utils
 Suggests: devtools,
-    testthat,
     knitr,
     rmarkdown
 VignetteBuilder: knitr

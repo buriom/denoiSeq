@@ -24,10 +24,10 @@ the readsData object returned by denoiSeq.
 }
 \examples{
 #pre -filtering to remove lowly expressed genes
-ERCC <- ERCC[rowSums(ERCC)>15,]
+ERCC <- ERCC[rowSums(ERCC)>0,]
 RD <- new('readsData',counts = ERCC)
-steps <- 100
-#100 steps are not adequate. Just for illustration here.
+steps <- 30
+#30 steps are just for illustration here. Atleast 5000 steps are adequate.
 BI <- denoiseq(RD,steps)
 samples <- getSamplesOf(BI,'ERCC-00051',steps)
 plot(samples,type='l', main = 'History plot of ERCC-00051')

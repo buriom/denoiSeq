@@ -17,7 +17,7 @@ results(RDobject, steps, burnin = floor(steps/3), rope_limit = 0.5)
 equivalance, ROPE. A default value of 0.5 is used.}
 }
 \value{
-A dataframe with 3 columns namely; the log2 fold change (log2FC), the standard error of the log2 fold change (lgfcSE) and the test static (stat).
+A dataframe with 3 columns namely; the log2 fold change (log2FC), the standard error of the log2 fold change (lgfcSE) and the test static ( ROPE_propn).
 }
 \description{
 Extracts the results of Bayesian inference returned by denoiSeq function and
@@ -29,23 +29,23 @@ The test statistic is calculated  by first log2 transforming the samples of the 
 distribution of differences that lies in the region of practical equivalence (ROPE). We then select
  genes whose test statistic value  is below a given threshold as differentially expressed.
  From simulated data, a typical threshold value is around 0.3. However, one
- can also arrange the stat column in ascending order and select the most differentially expressed genes.
+ can also arrange the ROPE_propn column in ascending order and select the most differentially expressed genes.
 }
 \examples{
 #pre -filtering to remove lowly expressed genes
-ERCC <- ERCC[rowSums(ERCC)>15,]
+ERCC <- ERCC[rowSums(ERCC)>0,]
 RD <- new('readsData',counts = ERCC)
-steps <- 100
-#100 steps are not adequate. Just for illustration here.
+steps <- 30
+#30 steps are just for illustration here. Atleast 5000 steps are adequate.
 BI <- denoiseq(RD,steps)
 rez <- results(BI,steps)
 head(rez)
 dim(rez)
 #Determine significant genes
-sgf <- rez[rez$stat<0.3,]
+sgf <- rez[rez$ ROPE_propn<0.3,]
 head(sgf)
 dim(sgf)
 #Re-ordering according to most differentially expressed
-rez <- rez[with(rez,order(stat)),]
+rez <- rez[with(rez,order( ROPE_propn)),]
 head(rez,10)
 }

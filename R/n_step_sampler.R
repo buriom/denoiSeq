@@ -8,12 +8,12 @@
 size_factors <- function(counts) {
     # To eliminate rows with zeros.
     counts <- counts[apply(counts, 1, prod) > 0, ]
-    geomean <- (apply(counts, 1, prod))^(1/ncol(counts))
-    s_j <- apply(counts/geomean, 2, median)
-    return(s_j/max(s_j))
+    geomean <- (apply(counts, 1, prod)) ^ (1 / ncol(counts))
+    s_j <- apply(counts / geomean, 2, median)
+    return(s_j / max(s_j))
 }
 
-#' Differential expression analysis based on a bottom up model (a superposition of a binomial and negative binomial distribution)
+#' Differential expression analysis based on a bottom-up model (a superposition of a binomial and negative binomial distribution)
 #'
 #' The denoiseq function perfoms default analysis by first normalising the counts and then estimating the model
 #' parameters using Bayesian inference. Size factors are estimated from count matrix and used for the normalisation.
@@ -27,10 +27,10 @@ size_factors <- function(counts) {
 #' This package  uses Bayesian inference to
 #'  estimate the model parameters. The counts in each column are used to estimate the size factors (Anders and Huber,2010) which are
 #' in turn used to normalise the counts. For an \code{m} by \code{n} count matrix, we have
-#' \code{2*m} \code{N_i} parameters to estimate (\code{m} for each of the two conditions) in addition to parameters \code{p}
-#' and \code{f}. denoiseq then uses the conditional
-#' rows of the matrix to estimate parameter N_i for each gene in each condition, and gene information sharing (the
-#' entire dataset combined from both conditions)  to estimate \code{p} and
+#' \code{2m} \code{N_i} parameters to estimate (\code{m} for the same genes in each of the two conditions) in addition to parameters \code{p}
+#' and \code{f}. denoiseq then uses the
+#' rows in each condition to estimate parameter N_i for each gene in each condition, and the
+#' entire dataset combined from both conditions  to estimate \code{p} and
 #' \code{f}. The result is an estimate for each of the \code{m} \code{N_i}
 #' parameters for each condition and estimates for \code{p} and \code{f}.
 #'
@@ -45,23 +45,22 @@ size_factors <- function(counts) {
 #'  stepsize which  contains the tuned step sizes.
 #' @examples
 #' #pre -filtering to remove lowly expressed genes
-#' ERCC <- ERCC[rowSums(ERCC)>15,]
+#' ERCC <- ERCC[rowSums(ERCC)>0,]
 #' RD <- new('readsData',counts = ERCC)
-#' steps <- 100
-#' #100 steps are not adequate. Just for illustration here.
+#' steps <- 30
+#' #30 steps are just for illustration here. Atleast 5000 steps are adequate.
 #' BI <- denoiseq(RD,steps)
 #'
 #' @export
-denoiseq <- function(RDobject, steps, tuningSteps = floor(steps/3)) {
+denoiseq <- function(RDobject, steps, tuningSteps = floor(steps / 3)) {
     # unpacking the counts
     counts <- RDobject@counts
-    m = nrow(counts)
+    m <-  nrow(counts)
     # subsetting to obtain matrices for each condition
-    counts_A = counts[, RDobject@replicates$A]
+    counts_A <-  counts[, RDobject@replicates$A]
     n_A <- ncol(counts_A)
-    counts_B = counts[, RDobject@replicates$B]
+    counts_B  <-  counts[, RDobject@replicates$B]
     n_B <- ncol(counts_B)
-
     # Calculating the size factors used in normalizing the counts
     propotns <- size_factors(counts)
     # initialising a list for the initial values
@@ -70,18 +69,17 @@ denoiseq <- function(RDobject, steps, tuningSteps = floor(steps/3)) {
     stepsize_vectr <- list(RDobject@stepSizes)
     # tuning
     for (i in 2:tuningSteps) {
-        results <- gibbsampling2(counts, counts_A, counts_B, parm_samples[[i - 1]],
-            propotns, stepsize_vectr[[i - 1]], m, n_A, n_B)
+        results <- gibbsampling2(counts, counts_A, counts_B, parm_samples[[i - 1]], propotns,
+                                 stepsize_vectr[[i - 1]], m, n_A, n_B)
         parm_samples[[i]] <- results$parms
         stepsize_vectr[[i]] <- results$stepsize
     }
     # setting tuned stepsizes
     step.size <- results$stepsize
     for (i in (tuningSteps + 1):steps) {
-        parm_samples[[i]] <- gibbsampling(counts, counts_A, counts_B, parm_samples[[i -
-            1]], propotns, step.size, m, n_A, n_B)
+        parm_samples[[i]] <- gibbsampling(counts, counts_A, counts_B, parm_samples[[i - 1]],
+                                          propotns, step.size, m, n_A, n_B)
     }
     RDobject <- setOutput(RDobject, list(samples = parm_samples, stepsize = stepsize_vectr))
     return(RDobject)
 }
-

@@ -1,7 +1,6 @@
 # _____________________________________________________________________________
 
-# Samples' extraction
-# _____________________________________________________________________________
+# Samples' extraction _____________________________________________________________________________
 
 
 #' Get sampled values  of a parameter
@@ -18,10 +17,10 @@
 #'
 #' @examples
 #' #pre -filtering to remove lowly expressed genes
-#' ERCC <- ERCC[rowSums(ERCC)>15,]
+#' ERCC <- ERCC[rowSums(ERCC)>0,]
 #' RD <- new('readsData',counts = ERCC)
-#' steps <- 100
-#' #100 steps are not adequate. Just for illustration here.
+#' steps <- 30
+#' #30 steps are just for illustration here. Atleast 5000 steps are adequate.
 #' BI <- denoiseq(RD,steps)
 #' samples <- getSamplesOf(BI,'ERCC-00051',steps)
 #' plot(samples,type='l', main = 'History plot of ERCC-00051')
@@ -52,8 +51,7 @@ getSamplesOf <- function(RDobject, parm, steps, condition = "A") {
             N_Asamples <- t(sapply(1:steps, getN_A, RDobject = RDobject))
             N <- N_Asamples[, parm]
             return(unlist(N))
-
-        } else if (condition == "B") {
+                    } else if (condition == "B") {
             N_Bsamples <- t(sapply(1:steps, getN_B, RDobject = RDobject))
             N <- N_Bsamples[, parm]
             return(unlist(N))
@@ -61,7 +59,6 @@ getSamplesOf <- function(RDobject, parm, steps, condition = "A") {
             print("Unknown parameter")
         }
     }
-
 }
 
 #' Get  values of the tuned step sizes.
@@ -72,10 +69,10 @@ getSamplesOf <- function(RDobject, parm, steps, condition = "A") {
 #' @return A list of the tuned step sizes of all the parameters.
 #' @examples
 #' #pre -filtering to remove lowly expressed genes
-#' ERCC <- ERCC[rowSums(ERCC)>15,]
+#' ERCC <- ERCC[rowSums(ERCC)>0,]
 #' RD <- new('readsData',counts = ERCC)
-#' steps <- 100
-#' #100 steps are not adequate. Just for illustration here.
+#' steps <- 30
+#' #30 steps are just for illustration here. Atleast 5000 steps are adequate.
 #' BI <- denoiseq(RD,steps)
 #' tunedStepSize(BI)
 #'
