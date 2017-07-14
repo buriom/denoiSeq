@@ -10,7 +10,7 @@ tunedStepSize(RDobject)
 \item{RDobject}{A readsData object with a filled output slot.}
 }
 \value{
-A list of the tuned step sizes of all the parameters.
+A list of the tuned step sizes for all the parameters.
 }
 \description{
 Extracts the tuned step sizes for each parameter from  the return value of  denoiseq.

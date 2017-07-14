@@ -35,7 +35,7 @@ Before we can create the readsData object, we first load the package.
 ```
 library(denoiSeq)
 ```
-This package is distributed with two datasets, i.e ERCC and simdat. The  ERCC dataset contains RNA-seq data of  biological replicates  characterized during the ENCODE project [@djebali2012landscape] and simdat that contains simulated data. In this first example, we will use the  simdat dataset. This dataset  contains 750 observational genes  with 5 experimental samples for each condition, summarised as a 750 by 10 integer matrix. The first 428 genes are not differentially expressed between the two conditions whereas the last 322 genes are. The genes counts were generated in accordance to the probability distribution derived by  @ndifon2012chromatin. We can examine the counts of the first and last 6 genes of this dataset using the `head` and `tail` commands in R repectively.
+This package is distributed with two datasets, i.e ERCC and simdat. The  ERCC dataset contains RNA-seq data of  biological replicates  characterized during the ENCODE project [@djebali2012landscape] and simdat that contains simulated data. In this first example, we will use the  simdat dataset. This dataset  contains 750  genes  with 5 experimental samples for each condition, summarised as a 750 by 10 integer matrix. The first 428 genes are not differentially expressed between the two conditions whereas the last 322 genes are. The genes counts were generated in accordance to the probability distribution derived by  @ndifon2012chromatin. We can examine the counts of the first and last 6 genes of this dataset using the `head` and `tail` commands in R respectively.
 ```
 head(simdat)
 tail(simdat)
@@ -60,13 +60,14 @@ With the exception of  output, all the other remaining slots are set to default 
 ##Bayesian inference
 Once the readsData is in place, we implement Bayesian inference by calling the `denoiseq` function, specifying the  number of steps to be used for posterior sampling, and a smaller number  steps to be used for step size tuning.
 ```
-steps <- 30
+steps <- 30 #30 steps are just for illustration here. Atleast 5000 steps are adequate.
+
 tuningSteps <- 10
 BI <- denoiseq(RD, steps, tuningSteps)
 ```
 The `denoiSeq` function then returns the same readsData object, but with a filled  output slot.
 
-In this example, the above chunk of code ran for about 1.5 minutes on a core i5, 8GB memory PC. We note that 30 steps is a very small number of iterations to obtain adequately accurate results. This piece of code is just meant for instruction purposes. At least 3000 steps should be  enough in this example, with about a third of those used for step size tuning (takes about 40 minutes on the same computer). A smaller dataset is used in the case study section below.
+In this example, the above chunk of code ran for about 1.5 minutes on a core i5, 8GB memory PC. We note that 30 steps is a very small number of iterations to obtain adequately accurate results. This piece of code is just meant for instruction purposes. At least 5000 steps should be  enough in this example, with about a third of those used for step size tuning (takes over an hour on the same computer). A smaller dataset is used in the case study section below.
 
 ##Differential analysis
 The results of the inference are used to determine differential expression. This is achieved  by calling the `results` function, which returns a data frame with three columns; the log2 fold change (log2FC), the standard error of the log2 fold change (lgfcSE) and the test static (ROPE_propn), and with as many rows as the number of genes.
@@ -135,7 +136,8 @@ RD2 <- new("readsData", counts = ERCC,replicates = reps, initValues
 ###Bayesian inference
 The tuningSteps argument has been set to the default value  `= floor(steps/3)`.
 ```{r, echo=TRUE}
-steps <- 30
+steps <- 30#30 steps are just for illustration here. Atleast 5000 steps are adequate.
+
 BI2 <- denoiseq(RD2, steps)
 ```
 

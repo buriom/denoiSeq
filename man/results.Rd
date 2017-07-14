@@ -2,7 +2,7 @@
 % Please edit documentation in R/DE_analysis.R
 \name{results}
 \alias{results}
-\title{Extract results from denoiseq analysis}
+\title{Compute the test statistic}
 \usage{
 results(RDobject, steps, burnin = floor(steps/3), rope_limit = 0.5)
 }
@@ -11,41 +11,46 @@ results(RDobject, steps, burnin = floor(steps/3), rope_limit = 0.5)
 
 \item{steps}{An integer representing the number of iterations.}
 
-\item{burnin}{An integer for the number of iterations to be considered as burn in values.}
+\item{burnin}{An integer for the number of iterations to be considered as burn in values. A default value
+equivalent to a third of steps is used.}
 
 \item{rope_limit}{A float that delimits the range of the region of practical
-equivalance, ROPE. A default value of 0.5 is used.}
+equivalence, ROPE. A default value of 0.5 is used.}
 }
 \value{
-A dataframe with 3 columns namely; the log2 fold change (log2FC), the standard error of the log2 fold change (lgfcSE) and the test static ( ROPE_propn).
+A dataframe with 3 columns namely; the log2 fold change (log2FC), the standard error of the log2
+fold change (lgfcSE) and the test static ( ROPE_propn).
 }
 \description{
-Extracts the results of Bayesian inference returned by denoiSeq function and
+Extracts  posterior samples of the  parameters which are returned by denoiSeq function and
  computes the summary and test statistics.
 }
 \details{
-The test statistic is calculated  by first log2 transforming the samples of the relevant parameters
-(i.e N_iA and N_iB), subtracting one sample from the other, and then determining the propotion of this
-distribution of differences that lies in the region of practical equivalence (ROPE). We then select
- genes whose test statistic value  is below a given threshold as differentially expressed.
- From simulated data, a typical threshold value is around 0.3. However, one
- can also arrange the ROPE_propn column in ascending order and select the most differentially expressed genes.
+To calculate the  test statistic, this function  first log2 transforms the samples of the two relevant parameters
+i.e N_iA and N_iB. It then subtracts posterior samples of one of the parameters  from the other and
+determines the proportion of this
+distribution of differences that lies in the region of practical equivalence (ROPE) (Kruschke, 2011).
+The genes can then be arranged in an ascending order of  the ROPE_propn column and we can select the most
+differentially expressed genes as those whose ROPE_propn is less than a particular threshold value.
+
+Using both real and  simulated data, optimal values between 0.0007 and 0.4 were obtained for the threshold.
 }
 \examples{
 #pre -filtering to remove lowly expressed genes
 ERCC <- ERCC[rowSums(ERCC)>0,]
 RD <- new('readsData',counts = ERCC)
 steps <- 30
-#30 steps are just for illustration here. Atleast 5000 steps are adequate.
+#30 steps are just for illustration here. At least 5000 steps are adequate.
 BI <- denoiseq(RD,steps)
 rez <- results(BI,steps)
 head(rez)
-dim(rez)
-#Determine significant genes
-sgf <- rez[rez$ ROPE_propn<0.3,]
-head(sgf)
-dim(sgf)
+
 #Re-ordering according to most differentially expressed
 rez <- rez[with(rez,order( ROPE_propn)),]
 head(rez,10)
+
+#Determine significant genes using a threshold of 0.38.
+sgf <- rez[rez$ ROPE_propn<0.38,]
+head(sgf)
+dim(sgf)
 }

@@ -2,28 +2,28 @@
 % Please edit documentation in R/output_functions.R
 \name{getSamplesOf}
 \alias{getSamplesOf}
-\title{Get sampled values  of a parameter}
+\title{Get posterior samples  of a parameter}
 \usage{
 getSamplesOf(RDobject, parm, steps, condition = "A")
 }
 \arguments{
 \item{RDobject}{A readsData object with a filled output slot.}
 
-\item{parm}{A parameter name string i.e  p, f or transcript name.}
+\item{parm}{A parameter name string i.e  p, f or gene name.}
 
-\item{steps}{An integer representing number of iterations of used while calling denoiseq.}
+\item{steps}{An integer representing number of iterations  used while calling denoiseq.}
 
 \item{condition}{A character (either  A or B) representing the two experimental conditions.}
 }
 \value{
-A vector  of parameter samples with length equal to steps.
+A vector  of parameter samples of length equal to steps.
 }
 \description{
-Extracts sampled values of individual parameters contianed in the  output slot of
+Extracts posterior samples of individual parameters contained in the  output slot of
 the readsData object returned by denoiSeq.
 }
 \examples{
-#pre -filtering to remove lowly expressed genes
+#pre-filtering to remove lowly expressed genes
 ERCC <- ERCC[rowSums(ERCC)>0,]
 RD <- new('readsData',counts = ERCC)
 steps <- 30

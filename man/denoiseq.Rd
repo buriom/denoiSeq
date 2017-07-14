@@ -2,7 +2,7 @@
 % Please edit documentation in R/n_step_sampler.R
 \name{denoiseq}
 \alias{denoiseq}
-\title{Differential expression analysis based on a bottom up model (a superposition of a binomial and negative binomial distribution)}
+\title{Differential expression analysis using a bottom-up model}
 \usage{
 denoiseq(RDobject, steps, tuningSteps = floor(steps/3))
 }
@@ -15,32 +15,31 @@ denoiseq(RDobject, steps, tuningSteps = floor(steps/3))
 used for tuning the step sizes. Defaulted to a third of steps.}
 }
 \value{
-The same readsData object but with the output slot filled by a  list of 2 lists; a list named samples which contains parameter samples
-for each of  \code{N_i},\code{p} and \code{f}, at each iteration, and a second list called
+The same readsData object but with a filled output slot. The output slot now contains  2 lists, i.e samples which contains
+ posterior  samples  for each of the parameters  \code{N_i}, \code{p} and \code{f}, and
  stepsize which  contains the tuned step sizes.
 }
 \description{
 The denoiseq function perfoms default analysis by first normalising the counts and then estimating the model
 parameters using Bayesian inference. Size factors are estimated from count matrix and used for the normalisation.
-The  Gibb's sampling algorithm is then used to sample from the joint distribution of the model parameters.
+The  Gibb's sampling algorithm is then used to sample from the joint posterior distribution of the model parameters.
 }
 \details{
-The denoiSeq package is based on a bottom up model for PCR amplified sequencing developed by Ndifon et al (2012)
- which culminates into a  superposition of the binomial and negative binomial as the modelled distribution for the gene counts.
-The derived distribution has three main parameters, i.e \code{N,p} and \code{f} which represent the initial gene amount  before
-amplification, the amplification efficiency and the dilution rate, respectively.
+The denoiSeq package is based on a bottom-up model for PCR sequencing developed by Ndifon et al. (2012). The model
+generates, in a bottom-up manner, a probability distribution for the final copy number of a gene, which is in
+the form of a superposition of the negative binomial and the binomial distributions.  The derived distribution has three main
+parameters, i.e \code{N, p} and \code{f} , which represent the initial gene
+amount before amplification, the amplification efficiency and the dilution rate, respectively.
 
-This package  uses Bayesian inference to
- estimate the model parameters. The counts in each column are used to estimate the size factors (Anders and Huber,2010) which are
-in turn used to normalise the counts. For an \code{m} by \code{n} count matrix, we have
-\code{2*m} \code{N_i} parameters to estimate (\code{m} for each of the two conditions) in addition to parameters \code{p}
-and \code{f}. denoiseq then uses the conditional
-rows of the matrix to estimate parameter N_i for each gene in each condition, and gene information sharing (the
-entire dataset combined from both conditions)  to estimate \code{p} and
-\code{f}. The result is an estimate for each of the \code{m} \code{N_i}
-parameters for each condition and estimates for \code{p} and \code{f}.
+Bayesian inference is used to estimate the model parameters. The counts in each column are used to estimate the size factors (Anders and Huber,2010) which are
+in turn used to normalise the counts. For an m by n matrix, inference aims at estimating the three sets of parameters, i.e \code{p, f} and \code{N_i} ’s (2m in total
+because we are considering 2 conditions with the same m genes in each).
+denoiseq  uses the
+rows in each condition to estimate parameter N_i for each gene in that condition, and the
+entire dataset combined from both conditions  to estimate \code{p} and
+\code{f}.
 
-For differential expression analysis, the parameters of interest are the \code{N_i}s for each gene, \code{i}.
+For differential expression analysis, the primary parameters of interest are \eqn{N_iA} and \code{N_iB} (from conditions A and B respectively), for each gene i.
 }
 \examples{
 #pre -filtering to remove lowly expressed genes

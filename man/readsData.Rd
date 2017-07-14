@@ -11,10 +11,10 @@ An S4 class to represent summarised counts and the output of Bayesian inference.
 
 \describe{
 \item{\code{counts}}{A positive integer matrix containing summarised counts for each
-genomic event (genes, exons, transcripts, etc)  in the two conditions.}
+genomic event (genes, exons, transcripts, etc)  in the two conditions, A and B.}
 
-\item{\code{replicates}}{A list containing the indices of the columns in each of the two
-conditions. It is defaulted to A = 1:5, B = 6:10.}
+\item{\code{replicates}}{A list containing the indices of the columns that belong to each  of the two
+experimental conditions, A and B. It is defaulted to A = 1:n/2, B = n/2+1:n for an m by n matrix.}
 
 \item{\code{geneNames}}{A character vector containing the names of the genomic event. It is
 appropriately defaulted to names of a the matrix.}

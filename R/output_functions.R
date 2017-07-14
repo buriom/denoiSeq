@@ -3,20 +3,20 @@
 # Samples' extraction _____________________________________________________________________________
 
 
-#' Get sampled values  of a parameter
+#' Get posterior samples  of a parameter
 #'
-#' Extracts sampled values of individual parameters contianed in the  output slot of
+#' Extracts posterior samples of individual parameters contained in the  output slot of
 #' the readsData object returned by denoiSeq.
 #'
-#' @param parm A parameter name string i.e  p, f or transcript name.
+#' @param parm A parameter name string i.e  p, f or gene name.
 #' @param RDobject A readsData object with a filled output slot.
-#' @param steps An integer representing number of iterations of used while calling denoiseq.
+#' @param steps An integer representing number of iterations  used while calling denoiseq.
 #' @param condition A character (either  A or B) representing the two experimental conditions.
 #'
-#' @return A vector  of parameter samples with length equal to steps.
+#' @return A vector  of parameter samples of length equal to steps.
 #'
 #' @examples
-#' #pre -filtering to remove lowly expressed genes
+#' #pre-filtering to remove lowly expressed genes
 #' ERCC <- ERCC[rowSums(ERCC)>0,]
 #' RD <- new('readsData',counts = ERCC)
 #' steps <- 30
@@ -51,7 +51,7 @@ getSamplesOf <- function(RDobject, parm, steps, condition = "A") {
             N_Asamples <- t(sapply(1:steps, getN_A, RDobject = RDobject))
             N <- N_Asamples[, parm]
             return(unlist(N))
-                    } else if (condition == "B") {
+        } else if (condition == "B") {
             N_Bsamples <- t(sapply(1:steps, getN_B, RDobject = RDobject))
             N <- N_Bsamples[, parm]
             return(unlist(N))
@@ -66,7 +66,7 @@ getSamplesOf <- function(RDobject, parm, steps, condition = "A") {
 #' Extracts the tuned step sizes for each parameter from  the return value of  denoiseq.
 #'
 #' @param RDobject A readsData object with a filled output slot.
-#' @return A list of the tuned step sizes of all the parameters.
+#' @return A list of the tuned step sizes for all the parameters.
 #' @examples
 #' #pre -filtering to remove lowly expressed genes
 #' ERCC <- ERCC[rowSums(ERCC)>0,]

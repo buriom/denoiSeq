@@ -19,9 +19,9 @@ The same readsData object with the replicates slot updated.
 Alters the value of the replicates slot.
 }
 \examples{
-RD <- new("readsData",counts = ERCC)
+RD <- new("readsData", counts = ERCC)
 reps <- list(A = c(2,4,5,3,10),B = c(9,7,1,8,6))
-RD <- setReplicates(RD,reps)
+RD <- setReplicates(RD, reps)
 RD@replicates
 
 }
