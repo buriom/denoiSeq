@@ -17,7 +17,7 @@ genomic event (genes, exons, transcripts, etc)  in the two conditions, A and B.}
 experimental conditions, A and B. It is defaulted to A = 1:n/2, B = n/2+1:n for an m by n matrix.}
 
 \item{\code{geneNames}}{A character vector containing the names of the genomic event. It is
-appropriately defaulted to names of a the matrix.}
+appropriately defaulted to names of  the matrix.}
 
 \item{\code{initValues}}{A list containing initial values for each parameter. Defaulted to \emph{N_A} = rep(1, nrow(counts)),\emph{N_B} = rep(1, nrow(counts)),\emph{p}= 0.0001, \emph{f} = 0.01}
 

@@ -29,12 +29,12 @@ size_factors <- function(counts) {
 #' in turn used to normalise the counts. For an m by n matrix, inference aims at estimating the three sets of parameters, i.e \code{p, f} and \code{N_i} ’s (2m in total
 #' because we are considering 2 conditions with the same m genes in each).
 #' denoiseq  uses the
-#' rows in each condition to estimate parameter N_i for each gene in that condition, and the
-#' entire dataset combined from both conditions  to estimate \code{p} and
+#' rows in each condition to estimate parameter N_i for each gene in that condition, and uses the
+#' entire dataset, combined from both conditions,  to estimate \code{p} and
 #' \code{f}.
 #'
 #' For differential expression analysis, the primary parameters of interest are \eqn{N_iA} and \code{N_iB} (from conditions A and B respectively), for each gene i.
-#' @param RDobject A readsData object with atleast the counts slot filled.
+#' @param RDobject A readsData object.
 #' @param steps  An integer representing the number of iterations.
 #' @param tuningSteps An integer representing the number of iterations to be
 #'   used for tuning the step sizes. Defaulted to a third of steps.

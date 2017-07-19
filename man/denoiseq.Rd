@@ -7,7 +7,7 @@
 denoiseq(RDobject, steps, tuningSteps = floor(steps/3))
 }
 \arguments{
-\item{RDobject}{A readsData object with atleast the counts slot filled.}
+\item{RDobject}{A readsData object.}
 
 \item{steps}{An integer representing the number of iterations.}
 
@@ -35,8 +35,8 @@ Bayesian inference is used to estimate the model parameters. The counts in each 
 in turn used to normalise the counts. For an m by n matrix, inference aims at estimating the three sets of parameters, i.e \code{p, f} and \code{N_i} ’s (2m in total
 because we are considering 2 conditions with the same m genes in each).
 denoiseq  uses the
-rows in each condition to estimate parameter N_i for each gene in that condition, and the
-entire dataset combined from both conditions  to estimate \code{p} and
+rows in each condition to estimate parameter N_i for each gene in that condition, and uses the
+entire dataset, combined from both conditions,  to estimate \code{p} and
 \code{f}.
 
 For differential expression analysis, the primary parameters of interest are \eqn{N_iA} and \code{N_iB} (from conditions A and B respectively), for each gene i.

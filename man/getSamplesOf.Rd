@@ -16,7 +16,7 @@ getSamplesOf(RDobject, parm, steps, condition = "A")
 \item{condition}{A character (either  A or B) representing the two experimental conditions.}
 }
 \value{
-A vector  of parameter samples of length equal to steps.
+A vector  of parameter samples, of length equal to steps.
 }
 \description{
 Extracts posterior samples of individual parameters contained in the  output slot of

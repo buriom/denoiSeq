@@ -29,13 +29,13 @@ The package only performs a two group comparison and  assumes that the user has 
 
 ##Preparation
 We begin the analysis by creating a readsData object to handle the count data. This object has six slots namely; counts, geneNames, replicates, initValues, stepSize and output. The first four slots are specified before the analysis and the latter (output) is used to store the results of the Bayesian inference and is set by the `results` function. 
-Briefly, the `counts` slot contains the matrix of counts; `geneNames` contains the names of the genes; `replicates` contains a list of two elements ($A$ and $B$), each of which is a vector of  indices  for the columns that belong to each respective condition;  `initValues`  contains the initial values; and  `stepSize`  contains the step sizes for all parameters to be estimated.
+Briefly, the `counts` slot contains the matrix of counts; `geneNames` contains the names of the genes; `replicates` contains a list of two elements ($A$ and $B$), each of which is a vector of  indices  for the columns that belong to each respective condition;  `initValues`  contains the initial values; and  `stepSize`  contains the step sizes for sampling all parameters to be estimated.
 
 Before we can create the readsData object, we first load the package.
 ```
 library(denoiSeq)
 ```
-This package is distributed with two datasets, i.e ERCC and simdat. The  ERCC dataset contains RNA-seq data of  biological replicates  characterized during the ENCODE project [@djebali2012landscape] and simdat that contains simulated data. In this first example, we will use the  simdat dataset. This dataset  contains 750  genes  with 5 experimental samples for each condition, summarised as a 750 by 10 integer matrix. The first 428 genes are not differentially expressed between the two conditions whereas the last 322 genes are. The genes counts were generated in accordance to the probability distribution derived by  @ndifon2012chromatin. We can examine the counts of the first and last 6 genes of this dataset using the `head` and `tail` commands in R respectively.
+This package is distributed with two datasets, i.e ERCC and simdat. The  ERCC dataset contains RNA-seq data of  biological replicates  characterized during the ENCODE project [@djebali2012landscape] and simdat  contains simulated data. In this first example, we will use the  simdat dataset. This dataset  contains 750  genes  with 5 experimental samples for each condition, summarised as a 750 by 10 integer matrix. The first 428 genes are not differentially expressed between the two conditions whereas the last 322 genes are. The genes counts were generated in accordance to the probability distribution derived by  @ndifon2012chromatin. We can examine the counts of the first and last 6 genes of this dataset using the `head` and `tail` commands in R respectively.
 ```
 head(simdat)
 tail(simdat)
@@ -67,10 +67,10 @@ BI <- denoiseq(RD, steps, tuningSteps)
 ```
 The `denoiSeq` function then returns the same readsData object, but with a filled  output slot.
 
-In this example, the above chunk of code ran for about 1.5 minutes on a core i5, 8GB memory PC. We note that 30 steps is a very small number of iterations to obtain adequately accurate results. This piece of code is just meant for instruction purposes. At least 5000 steps should be  enough in this example, with about a third of those used for step size tuning (takes over an hour on the same computer). A smaller dataset is used in the case study section below.
+In this example, the above chunk of code ran for about 1.5 minutes on a core i5, 8GB memory PC. We note that 30 steps is a very small number of iterations to obtain adequately accurate results. This piece of code is just meant for instruction purposes. At least 5000 steps should be  adequate in this example, with about a third of those used for step size tuning (takes over an hour on the same computer). A smaller dataset is used in the case study section below.
 
 ##Differential analysis
-The results of the inference are used to determine differential expression. This is achieved  by calling the `results` function, which returns a data frame with three columns; the log2 fold change (log2FC), the standard error of the log2 fold change (lgfcSE) and the test static (ROPE_propn), and with as many rows as the number of genes.
+The results of the inference are used to determine differential expression. This is achieved  by calling the `results` function, which returns a data frame with three columns, i.e the log2 fold change (log2FC), the standard error of the log2 fold change (lgfcSE) and the test static (ROPE_propn), and with as many rows as the number of genes.
 
 The `results` function has the same arguments as `denoiseq`, with an additional `rope_limits` argument which is  defaulted to 0.5. This parameter represents the upper bound of the log (to base 2) of the fold change that we consider non-significant.
 
@@ -97,7 +97,6 @@ SS <- tunedStepSize(BI)
 The returned value can then be assigned to the `stepSize` slot for use in another run of Gibbs sampling implemented with `denoiseq`.
 
 ##Case study: Analysis of the ERCC dataset
-###Introduction
 In this case study, we will use the ERCC dataset which contains a mixture of 92 spike-in synthetic oligonucleotides that
    are mixed into experimental samples A and B at four mixing ratios: 1/2, 2/3, 1 and 4. The genes with a mixing ratio of 1:1 (rows 24 to 46), represent the only genes with non-significant expression differences between conditions A and B. There are five experimental samples for each condition.
 
@@ -136,10 +135,11 @@ RD2 <- new("readsData", counts = ERCC,replicates = reps, initValues
 ###Bayesian inference
 The tuningSteps argument has been set to the default value  `= floor(steps/3)`.
 ```{r, echo=TRUE}
-steps <- 30#30 steps are just for illustration here. Atleast 5000 steps are adequate.
+steps <- 100#100 steps are just for illustration here. Atleast 5000 steps are adequate. 
 
 BI2 <- denoiseq(RD2, steps)
 ```
+**NOTE:** A more adequate value for the number of steps is 5000 and this took about 16 minutes on the same PC.
 
 ###Differential expression analysis
 In this case, we will explicitly set the value for the 'rope_limits' argument.

@@ -13,7 +13,7 @@
 #' @param steps An integer representing number of iterations  used while calling denoiseq.
 #' @param condition A character (either  A or B) representing the two experimental conditions.
 #'
-#' @return A vector  of parameter samples of length equal to steps.
+#' @return A vector  of parameter samples, of length equal to steps.
 #'
 #' @examples
 #' #pre-filtering to remove lowly expressed genes
@@ -63,10 +63,10 @@ getSamplesOf <- function(RDobject, parm, steps, condition = "A") {
 
 #' Get  values of the tuned step sizes.
 #'
-#' Extracts the tuned step sizes for each parameter from  the return value of  denoiseq.
+#' Extracts the tuned step sizes for sampling each parameter from  the return value of  denoiseq.
 #'
 #' @param RDobject A readsData object with a filled output slot.
-#' @return A list of the tuned step sizes for all the parameters.
+#' @return A list of the tuned step sizes for sampling each of the parameters.
 #' @examples
 #' #pre -filtering to remove lowly expressed genes
 #' ERCC <- ERCC[rowSums(ERCC)>0,]

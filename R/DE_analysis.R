@@ -37,7 +37,7 @@ DEstat <- function(N_A, N_B, rope_limit = 0.5) {
 #' Extracts  posterior samples of the  parameters which are returned by denoiSeq function and
 #'  computes the summary and test statistics.
 #'
-#' To calculate the  test statistic, this function  first log2 transforms the samples of the two relevant parameters
+#' To calculate the  test statistic, this function  first log2 transforms the  posterior samples of the two relevant parameters
 #' i.e N_iA and N_iB. It then subtracts posterior samples of one of the parameters  from the other and
 #' determines the proportion of this
 #' distribution of differences that lies in the region of practical equivalence (ROPE) (Kruschke, 2011).
