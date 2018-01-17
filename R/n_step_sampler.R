@@ -22,10 +22,10 @@ size_factors <- function(counts) {
 #' The denoiSeq package is based on a bottom-up model for PCR sequencing developed by Ndifon et al. (2012). The model
 #' generates, in a bottom-up manner, a probability distribution for the final copy number of a gene, which is in
 #' the form of a superposition of the negative binomial and the binomial distributions.  The derived distribution has three main
-#' parameters, i.e \code{N, p} and \code{f} , which represent the initial gene
+#' parameters, i.e \code{N, p} and \code{f}, which represent the initial gene
 #' amount before amplification, the amplification efficiency and the dilution rate, respectively.
 #'
-#' Bayesian inference is used to estimate the model parameters. The counts in each column are used to estimate the size factors (Anders and Huber,2010) which are
+#' Bayesian inference is used to estimate the model parameters. The counts in each column are used to estimate the size factors (Anders and Huber, 2010) which are
 #' in turn used to normalise the counts. For an m by n matrix, inference aims at estimating the three sets of parameters, i.e \code{p, f} and \code{N_i} ’s (2m in total
 #' because we are considering 2 conditions with the same m genes in each).
 #' denoiseq  uses the
@@ -44,11 +44,11 @@ size_factors <- function(counts) {
 #'  stepsize which  contains the tuned step sizes.
 #' @examples
 #' #pre -filtering to remove lowly expressed genes
-#' ERCC <- ERCC[rowSums(ERCC)>0,]
-#' RD <- new('readsData',counts = ERCC)
+#' ERCC <- ERCC[rowSums(ERCC)>0, ]
+#' RD <- new('readsData', counts = ERCC)
 #' steps <- 30
 #' #30 steps are just for illustration here. Atleast 5000 steps are adequate.
-#' BI <- denoiseq(RD,steps)
+#' BI <- denoiseq(RD, steps)
 #'
 #' @export
 denoiseq <- function(RDobject, steps, tuningSteps = floor(steps / 3)) {

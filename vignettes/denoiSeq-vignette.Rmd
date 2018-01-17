@@ -45,17 +45,17 @@ Because Bayesian inference is computationally intensive, users are advised to pe
 ```
 simdat <- simdat[ rowSums(simdat) > 0, ],
 ```
-to eliminate the non-expressed genes.   <!--since as has been reported [@bullard2010evaluation], it is difficult to detect accurately a signal of difference  in such genes.--> This also helps to increase the computational  efficiency of the analysis. <!--Threshold values of 30 for large datasets (>400 genes) and 15 for smaller datasets (<=100 genes) were chosen based on analysis of existing annotated real datasets.-->
+to eliminate the non-expressed genes.   <!--since as has been reported [@bullard2010evaluation], it is difficult to detect accurately a signal of difference  in such genes.--> This also helps to increase the computational  efficiency of the analysis. <!--Threshold values of 30 for large datasets (> 400 genes) and 15 for smaller datasets (<=100 genes) were chosen based on analysis of existing annotated real datasets.-->
 
 From the output of `head()` above, we notice that  the simdat count matrix has no gene names and so we have to explicitly specify the geneNames slot. We begin by creating gene names below:
 ```
-genenames <- paste("gene_",1:750,sep = "_").
+genenames <- paste("gene_", 1:750, sep = "_").
 ```
 We then create a readsData object:
 ```
-RD <- new("readsData", counts = simdat,geneNames = genenames)
+RD <- new("readsData", counts = simdat, geneNames = genenames)
 ```
-With the exception of  output, all the other remaining slots are set to default values. See the class documentation for more details using `?readsData`. In the event that  the object has already been formed, the default values can be altered using the class methods `setReplicates`,`setInitValues` and `setStepSizes` respectively.
+With the exception of  output, all the other remaining slots are set to default values. See the class documentation for more details using `?readsData`. In the event that  the object has already been formed, the default values can be altered using the class methods `setReplicates`, `setInitValues` and `setStepSizes` respectively.
 
 ##Bayesian inference
 Once the readsData is in place, we implement Bayesian inference by calling the `denoiseq` function, specifying the  number of steps to be used for posterior sampling, and a smaller number  steps to be used for step size tuning.
@@ -75,20 +75,20 @@ The results of the inference are used to determine differential expression. This
 The `results` function has the same arguments as `denoiseq`, with an additional `rope_limits` argument which is  defaulted to 0.5. This parameter represents the upper bound of the log (to base 2) of the fold change that we consider non-significant.
 
 ```
-rez <- results(BI,steps, tuningSteps)
+rez <- results(BI, steps, tuningSteps)
 head(rez)
 ```
 
 ##Other functions
 For diagnostics about the behavior of the posterior samples  generated, the package has the `getSamplesOf` function that takes as  argument, the  name of a model parameter (i.e $p,f$,or the gene name for any of  the $N_i$'s) and returns a vector of posterior samples for that parameter. The other arguments are a `readsData` object with a populated output slot, the number of steps  used in sampling and the experimental condition being considered. Instead of a gene name, the function can also take the row index of the counts matrix. In the following example, we extract the posterior samples for the parameter $N_{50}$ (i.e the initial count of the $50 ^{th}$ gene) from condition $B$.
 ```
-N_50 <- getSamplesOf(BI,"gene_50",steps,condition = "B")
+N_50 <- getSamplesOf(BI, "gene_50", steps, condition = "B")
 ```
 With these posterior samples, diagnostics such as evaluating the acceptance rate, creating  a history plot, and determining the  autocorrelation between posterior parameter samples can be performed, as illustrated below:
 ```
-acceptance_rate <- length(unique(gene_50))/steps
-plot(gene_50,type="l", main = "History plot of N_50")
-AL <- acf(gene_50, lag.max = 30,type = c("correlation"),plot = T)
+acceptance_rate <- length(unique(gene_50)) / steps
+plot(gene_50, type="l", main = "History plot of N_50")
+AL <- acf(gene_50, lag.max = 30, type = c("correlation"), plot = T)
 ```
 If one wishes, one can also have a look at the  tuned step sizes using `tunedStepSize`. This function takes the  readsData object returned by `denoiseq` as its only argument.
 ```
@@ -116,24 +116,24 @@ knitr::kable(head(ERCC, 4))
 ###Pre-filtering
 We pre-filtered the dataset by selecting rows with a rowsums above 0. 
 ```{r, echo=TRUE}
-ERCC <- ERCC[rowSums(ERCC)>0,]
+ERCC <- ERCC[rowSums(ERCC) > 0, ]
 dim(ERCC)
 ```
 
 ###Creating the readsData object
 Since the count matrix has row names, these were automatically assigned to the geneNames slot.
 ```{r, echo=TRUE}
-reps <- list(A=c(1,2,3,4,5),B=c(6,7,8,9,10))#specifying the columns for each condition
+reps <- list(A=c(1,2,3,4,5), B=c(6,7,8,9,10))#specifying the columns for each condition
 m <- dim(ERCC)[1]
-initvalues <- list(N_A = rep(1, m), N_B = rep(1,m), p = 0.0001, f = 0.01)
-stepsizes <- list(stepsizeN_A = rep(1, m),stepsizeN_B = rep(1,m)
-                  ,stepsize_p = 5e+07, stepsize_f = 1e3)
-RD2 <- new("readsData", counts = ERCC,replicates = reps, initValues
+initvalues <- list(N_A = rep(1, m), N_B = rep(1, m), p = 0.0001, f = 0.01)
+stepsizes <- list(stepsizeN_A = rep(1, m), stepsizeN_B = rep(1, m)
+                  , stepsize_p = 5e+07, stepsize_f = 1e3)
+RD2 <- new("readsData", counts = ERCC, replicates = reps, initValues
            = initvalues, stepSizes = stepsizes)
 ```
 
 ###Bayesian inference
-The tuningSteps argument has been set to the default value  `= floor(steps/3)`.
+The tuningSteps argument has been set to the default value  `= floor(steps / 3)`.
 ```{r, echo=TRUE}
 steps <- 100#100 steps are just for illustration here. Atleast 5000 steps are adequate. 
 
@@ -145,7 +145,7 @@ BI2 <- denoiseq(RD2, steps)
 In this case, we will explicitly set the value for the 'rope_limits' argument.
 ```{r, echo=TRUE}
 rope = 0.5
-rez2 <- results(BI2,steps,rope_limit = rope)
+rez2 <- results(BI2, steps, rope_limit = rope)
 ```
 ```
 head(rez2)
@@ -157,28 +157,28 @@ knitr::kable(head(rez2))
 A threshold value of the statistic is then chosen to determine significance. One can be determined by  arranging the ROPE_propn column in ascending order and selecting the most differentially expressed genes. Values ranging from 0.00075 to 0.4 were obtained for the Youden's index [@youden1950index] for a number of annotated datasets. The Youden's index is a statistic that captures the performance of a binary classifier.  It is defined for all points of an ROC curve and its maximum value  may be used as a criterion for selecting the optimum cut-off point when a diagnostic test gives a numeric rather than a binary result. 
 ```
 #Re-ordering according to most differentially expressed
-rez3 <- rez2[with(rez2,order(ROPE_propn)),]
-head(rez3,10)
+rez3 <- rez2[with(rez2, order(ROPE_propn)), ]
+head(rez3, 10)
 ```
 In this case, we chose a value of 0.38.
 ```
 #Determine significant genes
-sgf <- rez2[rez2$ROPE_propn<0.38,]
+sgf <- rez2[rez2$ROPE_propn < 0.38, ]
 head(sgf)
 dim(sgf)
 ```
 ### Diagnostics
 Posterior samples of parameter $N$ for gene $ERCC-00051$ in condition A are obtained and examined below, for the perfomance of Gibbs sampling.
 ```{r, echo=TRUE}
-samples <- getSamplesOf(BI2,"ERCC-00051",steps)
-acceptance_rate <- length(unique(samples))/steps
+samples <- getSamplesOf(BI2, "ERCC-00051", steps)
+acceptance_rate <- length(unique(samples)) / steps
 acceptance_rate
 ```
 The history plot and autocorrelation function can then be plotted as shown below.
 ```{r, echo=TRUE, fig.show='hold'}
-plot(samples,type="l", main = "History plot of ERCC-00051")
+plot(samples, type="l", main = "History plot of ERCC-00051")
 AL <- acf(samples, main = "Auto lag plot of ERCC-00051", lag.max = 30,
-          type = c("correlation"),plot = T)
+          type = c("correlation"), plot = T)
 ```
 
 ##session info

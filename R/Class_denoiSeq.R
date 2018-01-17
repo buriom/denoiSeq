@@ -38,10 +38,10 @@ setMethod ("initialize", signature  = "readsData",
                                   geneNames = rownames(counts),
                                   replicates = list(A = 1 : (ncol(counts) / 2),B= (ncol(counts) / 2 + 1) : ncol(counts)),
                                   stepSizes = list(stepsizeN_A = rep(1, nrow(counts)),
-                                                    stepsizeN_B = rep(1,nrow(counts)),
+                                                    stepsizeN_B = rep(1, nrow(counts)),
                                                     stepsize_p = 5e+07, stepsize_f = 1e3),
                                   initValues = list(N_A = rep(1, nrow(counts)),
-            N_B = rep(1,nrow(counts)), p = 0.0001, f = 0.01)){
+            N_B = rep(1, nrow(counts)), p = 0.0001, f = 0.01)){
              .Object@counts <- counts
              .Object@replicates <- replicates
              .Object@stepSizes <- stepSizes
@@ -88,9 +88,9 @@ setGeneric(name = "setInitValues",
 #' @return The same readsData object with the initValues slot updated.
 #'
 #' @examples
-#' RD <- new("readsData",counts = ERCC)
-#' initvals <- list(N_A = rep(2, 92),N_B = rep(1.5,92), p = 0.0005, f = 0.03)
-#' RD <- setInitValues(RD,initvals)
+#' RD <- new("readsData", counts = ERCC)
+#' initvals <- list(N_A = rep(2, 92), N_B = rep(1.5, 92), p = 0.0005, f = 0.03)
+#' RD <- setInitValues(RD, initvals)
 #' RD@initValues
 #' @export
 
@@ -112,7 +112,7 @@ setMethod(f = "setInitValues",
 #' @param stepSizesval A list of step sizes for all the  parameters.
 #' @keywords internal
 setGeneric(name =  "setStepSizes",
-           def =  function(object,stepSizesval)
+           def =  function(object, stepSizesval)
            {
              standardGeneric("setStepSizes")
            }
@@ -125,9 +125,9 @@ setGeneric(name =  "setStepSizes",
 #' @param stepSizesval A list of step sizes for all the  parameters.
 #' @return The same readsData object with the stepSizes slot updated.
 #' @examples
-#' RD <- new("readsData",counts = ERCC)
-#' ss <- list(N_A = rep(2, 92),N_B = rep(1.5,92), p = 3e5, f = 3.5e7)
-#' RD <- setStepSizes(RD,ss)
+#' RD <- new("readsData", counts = ERCC)
+#' ss <- list(N_A = rep(2,  92), N_B = rep(1.5, 92), p = 3e5, f = 3.5e7)
+#' RD <- setStepSizes(RD, ss)
 #' RD@stepSizes
 #' @export
 
