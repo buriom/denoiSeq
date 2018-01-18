@@ -19,8 +19,8 @@ The same readsData object with the initValues slot updated.
 Alters the value of the initValues slot.
 }
 \examples{
-RD <- new("readsData",counts = ERCC)
-initvals <- list(N_A = rep(2, 92),N_B = rep(1.5,92), p = 0.0005, f = 0.03)
-RD <- setInitValues(RD,initvals)
+RD <- new("readsData", counts = ERCC)
+initvals <- list(N_A = rep(2, 92), N_B = rep(1.5, 92), p = 0.0005, f = 0.03)
+RD <- setInitValues(RD, initvals)
 RD@initValues
 }

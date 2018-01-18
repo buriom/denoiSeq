@@ -1,17 +1,19 @@
 # _____________________________________________________________________________
 
-# Samples' extraction _____________________________________________________________________________
+# Samples' extraction __________________________________________________________
 
 
 #' Get posterior samples  of a parameter
 #'
-#' Extracts posterior samples of individual parameters contained in the  output slot of
-#' the readsData object returned by denoiSeq.
+#' Extracts posterior samples of individual parameters contained in the  output
+#' slot of the readsData object returned by denoiSeq.
 #'
 #' @param parm A parameter name string i.e  p, f or gene name.
 #' @param RDobject A readsData object with a filled output slot.
-#' @param steps An integer representing number of iterations  used while calling denoiseq.
-#' @param condition A character (either  A or B) representing the two experimental conditions.
+#' @param steps An integer representing number of iterations  used while calling
+#'  denoiseq.
+#' @param condition A character (either  A or B) representing the two
+#' experimental conditions.
 #'
 #' @return A vector  of parameter samples, of length equal to steps.
 #'
@@ -63,7 +65,8 @@ getSamplesOf <- function(RDobject, parm, steps, condition = "A") {
 
 #' Get  values of the tuned step sizes.
 #'
-#' Extracts the tuned step sizes for sampling each parameter from  the return value of  denoiseq.
+#' Extracts the tuned step sizes for sampling each parameter from  the return
+#' value of  denoiseq.
 #'
 #' @param RDobject A readsData object with a filled output slot.
 #' @return A list of the tuned step sizes for sampling each of the parameters.

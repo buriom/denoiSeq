@@ -15,9 +15,9 @@ denoiseq(RDobject, steps, tuningSteps = floor(steps/3))
 used for tuning the step sizes. Defaulted to a third of steps.}
 }
 \value{
-The same readsData object but with a filled output slot. The output slot now contains  2 lists, i.e samples which contains
- posterior  samples  for each of the parameters  \code{N_i}, \code{p} and \code{f}, and
- stepsize which  contains the tuned step sizes.
+The same readsData object but with a filled output slot. The output slot now contains  2 lists, i.e \emph{samples} which contains
+ posterior  samples  for each of the parameters  \eqn{N_i}, \eqn{p} and \eqn{f}, and
+ \emph{stepsize} which  contains the tuned step sizes.
 }
 \description{
 The denoiseq function perfoms default analysis by first normalising the counts and then estimating the model
@@ -26,27 +26,27 @@ The  Gibb's sampling algorithm is then used to sample from the joint posterior d
 }
 \details{
 The denoiSeq package is based on a bottom-up model for PCR sequencing developed by Ndifon et al. (2012). The model
-generates, in a bottom-up manner, a probability distribution for the final copy number of a gene, which is in
-the form of a superposition of the negative binomial and the binomial distributions.  The derived distribution has three main
-parameters, i.e \code{N, p} and \code{f} , which represent the initial gene
+generates, in a bottom-up manner, a probability distribution for the final copy number of a gene, that is
+ a superposition of the negative binomial and the binomial distributions.  The derived distribution has three main
+parameters, i.e \eqn{N, p} and \eqn{f}, which represent the initial gene
 amount before amplification, the amplification efficiency and the dilution rate, respectively.
 
-Bayesian inference is used to estimate the model parameters. The counts in each column are used to estimate the size factors (Anders and Huber,2010) which are
-in turn used to normalise the counts. For an m by n matrix, inference aims at estimating the three sets of parameters, i.e \code{p, f} and \code{N_i} ’s (2m in total
+Bayesian inference is used to estimate the model parameters. The counts in each column are used to estimate the size factors (Anders and Huber, 2010) which are
+in turn used to normalise the counts. For an \eqn{m}  by \eqn{n} matrix, inference aims at estimating the three sets of parameters, i.e \eqn{p, f} and \eqn{N_i} ’s (2m in total
 because we are considering 2 conditions with the same m genes in each).
 denoiseq  uses the
 rows in each condition to estimate parameter N_i for each gene in that condition, and uses the
-entire dataset, combined from both conditions,  to estimate \code{p} and
-\code{f}.
+entire dataset, combined from both conditions,  to estimate \eqn{p} and
+\eqn{f}.
 
-For differential expression analysis, the primary parameters of interest are \eqn{N_iA} and \code{N_iB} (from conditions A and B respectively), for each gene i.
+For differential expression analysis, the primary parameters of interest are \eqn{N_{iA}} and \eqn{N_{iB}} (from conditions A and B respectively), for each gene \eqn{i}.
 }
 \examples{
 #pre -filtering to remove lowly expressed genes
-ERCC <- ERCC[rowSums(ERCC)>0,]
-RD <- new('readsData',counts = ERCC)
+ERCC <- ERCC[rowSums(ERCC)>0, ]
+RD <- new('readsData', counts = ERCC)
 steps <- 30
-#30 steps are just for illustration here. Atleast 5000 steps are adequate.
-BI <- denoiseq(RD,steps)
+#30 steps are used for illustration here. Atleast 5000 steps are adequate.
+BI <- denoiseq(RD, steps)
 
 }

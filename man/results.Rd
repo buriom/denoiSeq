@@ -22,12 +22,12 @@ A dataframe with 3 columns namely; the log2 fold change (log2FC), the standard e
 fold change (lgfcSE) and the test static ( ROPE_propn).
 }
 \description{
-Extracts  posterior samples of the  parameters which are returned by denoiSeq function and
+Extracts  posterior samples of the  parameters which are returned by denoiseq function and
  computes the summary and test statistics.
 }
 \details{
 To calculate the  test statistic, this function  first log2 transforms the  posterior samples of the two relevant parameters
-i.e N_iA and N_iB. It then subtracts posterior samples of one of the parameters  from the other and
+i.e \eqn{N_iA} and \eqn{N_iB}. It then randomly subtracts posterior samples of one of the parameters  from the other and
 determines the proportion of this
 distribution of differences that lies in the region of practical equivalence (ROPE) (Kruschke, 2011).
 The genes can then be arranged in an ascending order of  the ROPE_propn column and we can select the most
@@ -37,20 +37,20 @@ Using both real and  simulated data, optimal values between 0.0007 and 0.4 were 
 }
 \examples{
 #pre -filtering to remove lowly expressed genes
-ERCC <- ERCC[rowSums(ERCC)>0,]
-RD <- new('readsData',counts = ERCC)
+ERCC <- ERCC[rowSums(ERCC) > 0, ]
+RD <- new('readsData', counts = ERCC)
 steps <- 30
 #30 steps are just for illustration here. At least 5000 steps are adequate.
-BI <- denoiseq(RD,steps)
-rez <- results(BI,steps)
+BI <- denoiseq(RD, steps)
+rez <- results(BI, steps)
 head(rez)
 
 #Re-ordering according to most differentially expressed
-rez <- rez[with(rez,order( ROPE_propn)),]
-head(rez,10)
+rez <- rez[with(rez, order( ROPE_propn)), ]
+head(rez, 10)
 
 #Determine significant genes using a threshold of 0.38.
-sgf <- rez[rez$ ROPE_propn<0.38,]
+sgf <- rez[rez$ROPE_propn<0.38, ]
 head(sgf)
 dim(sgf)
 }

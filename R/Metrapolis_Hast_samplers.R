@@ -1,6 +1,7 @@
 # _____________________________________________________________________________
 
-# Implementation of the Metrapolis-Hastings algorithm for sampling from each of the full conditionals
+# Implementation of the Metrapolis-Hastings algorithm for sampling from each of
+# the full conditionals
 # _____________________________________________________________________________
 
 # Normal Metrapolis-Hastings samplers

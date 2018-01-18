@@ -17,11 +17,11 @@ Extracts the tuned step sizes for sampling each parameter from  the return value
 }
 \examples{
 #pre -filtering to remove lowly expressed genes
-ERCC <- ERCC[rowSums(ERCC)>0,]
-RD <- new('readsData',counts = ERCC)
+ERCC <- ERCC[rowSums(ERCC)>0, ]
+RD <- new('readsData', counts = ERCC)
 steps <- 30
 #30 steps are just for illustration here. Atleast 5000 steps are adequate.
-BI <- denoiseq(RD,steps)
+BI <- denoiseq(RD, steps)
 tunedStepSize(BI)
 
 }
