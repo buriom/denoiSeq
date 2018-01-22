@@ -11,16 +11,18 @@ getSamplesOf(RDobject, parm, steps, condition = "A")
 
 \item{parm}{A parameter name string i.e  p, f or gene name.}
 
-\item{steps}{An integer representing number of iterations  used while calling denoiseq.}
+\item{steps}{An integer representing number of iterations  used while calling
+denoiseq.}
 
-\item{condition}{A character (either  A or B) representing the two experimental conditions.}
+\item{condition}{A character (either  A or B) representing the two
+experimental conditions.}
 }
 \value{
 A vector  of parameter samples, of length equal to steps.
 }
 \description{
-Extracts posterior samples of individual parameters contained in the  output slot of
-the readsData object returned by denoiSeq.
+Extracts posterior samples of individual parameters contained in the  output
+slot of the readsData object returned by denoiSeq.
 }
 \examples{
 #pre-filtering to remove lowly expressed genes

@@ -76,31 +76,28 @@ setValidity( "readsData", validity)
 #_______________________________________________________________________________
 #generic for setting the initValues slot
 
-#' Generic  for the initValues slot of the readsData object.
-#' @param object a readsData object
-#' @param initval A list of initial values for all the  parameters.
-#' @keywords internal
-
-setGeneric(name = "setInitValues",
-           def = function(object, initval){
-             standardGeneric("setInitValues")
-           }
-)
-
-#' Mutator method for the initValues slot of the readsData object.
+#' Generic  for altering the  initValues slot
 #'
-#' Alters the value of the initValues slot.
+#' Updates the value of the initValues slot for the readsData object supplied.
 #'
 #' @param object a readsData object
-#' @param initval A list of initial values for all the  parameters.
+#' @param initval A list of initial values for each of the  parameters.
 #' @return The same readsData object with the initValues slot updated.
-#'
 #' @examples
 #' RD <- new("readsData", counts = ERCC)
 #' initvals <- list(N_A = rep(2, 92), N_B = rep(1.5, 92), p = 0.0005, f = 0.03)
 #' RD <- setInitValues(RD, initvals)
 #' RD@initValues
 #' @export
+setGeneric(name = "setInitValues",
+           def = function(object, initval){
+             standardGeneric("setInitValues")
+           }
+)
+
+#' @describeIn setInitValues  Alters the value of the initValues slot of
+#'  a readsData object.
+#'
 
 setMethod(f = "setInitValues",
           signature = "readsData",
@@ -115,22 +112,12 @@ setMethod(f = "setInitValues",
 #_______________________________________________________________________________
 #generic for setting the stepSizes slot
 
-#' Generic  for the stepSizes slot of the readsData object.
+#' Generic  for altering the stepSizes slot.
+#'
+#' Updates the value of the stepSizes slot for the readsData object supplied.
+#'
 #' @param object a readsData object
-#' @param stepSizesval A list of step sizes for all the  parameters.
-#' @keywords internal
-setGeneric(name =  "setStepSizes",
-           def =  function(object, stepSizesval)
-           {
-             standardGeneric("setStepSizes")
-           }
-)
-#' Mutator method for the stepSizes slot of the readsData object.
-#'
-#' Alters the value of the stepSizes slot.
-#'
-#' @param object a readsData object.
-#' @param stepSizesval A list of step sizes for all the  parameters.
+#' @param stepSizesval A list of step sizes for each of  the  parameters.
 #' @return The same readsData object with the stepSizes slot updated.
 #' @examples
 #' RD <- new("readsData", counts = ERCC)
@@ -138,6 +125,16 @@ setGeneric(name =  "setStepSizes",
 #' RD <- setStepSizes(RD, ss)
 #' RD@stepSizes
 #' @export
+
+setGeneric(name =  "setStepSizes",
+           def =  function(object, stepSizesval)
+           {
+             standardGeneric("setStepSizes")
+           }
+)
+
+#' @describeIn setStepSizes  Alters the value of the stepSizes slot of
+#'  a readsData object.
 
 setMethod(f =  "setStepSizes",
           signature =  "readsData",
@@ -153,24 +150,13 @@ setMethod(f =  "setStepSizes",
 #_______________________________________________________________________________
 #method for setting the replicates slot
 
-#' Generic  for the replicates slot of the readsData object.
+#' Generic  for the altering setReplicates slot.
+#'
+#' Updates the value of the replicates slot for the readsData object supplied.
+#'
 #' @param object a readsData object
 #' @param repsval A list  of column indices for the samples in each condition.
-#' @keywords internal
-setGeneric(name =  "setReplicates",
-           def =  function(object, repsval)
-           {
-             standardGeneric("setReplicates")
-           }
-)
-#' Mutator method for the replicates slot of the readsData object.
-#'
-#' Alters the value of the replicates slot.
-#'
-#' @param object a readsData object.
-#' @param repsval A list of column indices for the samples in each condition.
 #' @return The same readsData object with the replicates slot updated.
-#'
 #' @examples
 #' RD <- new("readsData", counts = ERCC)
 #' reps <- list(A = c(2,4,5,3,10),B = c(9,7,1,8,6))
@@ -178,7 +164,14 @@ setGeneric(name =  "setReplicates",
 #' RD@replicates
 #'
 #' @export
-#'
+setGeneric(name =  "setReplicates",
+           def =  function(object, repsval)
+           {
+             standardGeneric("setReplicates")
+           }
+)
+#' @describeIn setReplicates  Alters the value of the replicates slot of
+#'  a readsData object.
 setMethod(f =  "setReplicates",
           signature =  "readsData",
           definition =  function(object, repsval)
@@ -194,20 +187,24 @@ setMethod(f =  "setReplicates",
 #_______________________________________________________________________________
 #method for setting the ouput slot
 
+#' Generic  for the altering output slot.
+#'
+#' Updates the value of the output slot for the readsData object supplied.
+#'
+#' @param object a readsData object.
+#' @param outval A list of the output from Bayesian inference.
+#' @return The same readsData object with the output slot updated.
+#'
 setGeneric(name =  "setOutput",
            def =  function(object, outval)
            {
              standardGeneric("setOutput")
            }
 )
-#' Mutator method for the output slot of the readsData object.
-#'
-#' sets the value of the output slot.
-#'
-#' @param object a readsData object.
-#' @param outval A list of the output from Bayesian inference.
-#' @return The same readsData object with the output slot updated.
-#'
+
+#' @describeIn setOutput  Alters the value of the output slot of
+#'  the readsData object.
+#' @keywords internal
 
 setMethod(f =  "setOutput",
           signature =  "readsData",

@@ -5,7 +5,7 @@
 #'   to generate  750 genes.  This dataset  contains 750 observational genes
 #'   with 5 experimental samples for each condition,  summarised as a 750 by 10
 #'   integer matrix. The first 428 genes are not differentially expressed
-#'   between the two conditions whereas the last 322 genes are. The genes counts
+#'   between the two conditions whereas the last 322 genes are. The gene counts
 #'    were generated in accordance to the probability distribution derived in
 #'    Ndifon et al.
 #' @format A matrix with 750 rows and 10 columns:

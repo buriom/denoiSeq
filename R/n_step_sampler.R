@@ -34,7 +34,7 @@ size_factors <- function(counts) {
 #' which are in turn used to normalise the counts. For an \eqn{m}  by \eqn{n}
 #' matrix, inference aims at estimating the three sets of parameters, i.e
 #' \eqn{p, f} and \eqn{N_i} ’s (2m in total because we are considering 2
-#' conditions with the same \emp{m} genes in each). denoiseq  uses the rows in
+#' conditions with the same \emph{m} genes in each). denoiseq  uses the rows in
 #' each condition to estimate parameter \eqn{N_i} for each gene in that
 #' condition, and uses the entire dataset, combined from both conditions,
 #'  to estimate \eqn{p} and \eqn{f}.

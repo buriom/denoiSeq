@@ -11,29 +11,34 @@ results(RDobject, steps, burnin = floor(steps/3), rope_limit = 0.5)
 
 \item{steps}{An integer representing the number of iterations.}
 
-\item{burnin}{An integer for the number of iterations to be considered as burn in values. A default value
-equivalent to a third of steps is used.}
+\item{burnin}{An integer for the number of iterations to be considered as
+burn in values. A default value equivalent to a third of steps is used.}
 
 \item{rope_limit}{A float that delimits the range of the region of practical
 equivalence, ROPE. A default value of 0.5 is used.}
 }
 \value{
-A dataframe with 3 columns namely; the log2 fold change (log2FC), the standard error of the log2
-fold change (lgfcSE) and the test static ( ROPE_propn).
+A dataframe with 3 columns namely; the log2 fold change (log2FC),
+the standard error of the log2 fold change (lgfcSE) and the test static
+(ROPE_propn).
 }
 \description{
-Extracts  posterior samples of the  parameters which are returned by denoiseq function and
- computes the summary and test statistics.
+Extracts  posterior samples of the  parameters which are returned by denoiseq
+ function and  computes the summary and test statistics.
 }
 \details{
-To calculate the  test statistic, this function  first log2 transforms the  posterior samples of the two relevant parameters
-i.e \eqn{N_iA} and \eqn{N_iB}. It then randomly subtracts posterior samples of one of the parameters  from the other and
-determines the proportion of this
-distribution of differences that lies in the region of practical equivalence (ROPE) (Kruschke, 2011).
-The genes can then be arranged in an ascending order of  the ROPE_propn column and we can select the most
-differentially expressed genes as those whose ROPE_propn is less than a particular threshold value.
+To calculate the  test statistic, this function  first log2 transforms the
+posterior samples of the two relevant parameters i.e \eqn{N_{iA}} and
+\eqn{N_{iB}}. It then randomly subtracts posterior samples of one of the
+parameters  from the other and determines the proportion of this
+distribution of differences that lies in the region of practical equivalence
+(ROPE) (Kruschke, 2011). The genes can then be arranged in an ascending
+order of  the ROPE_propn column and we can select the most differentially
+expressed genes as those whose ROPE_propn is less than a particular
+threshold value.
 
-Using both real and  simulated data, optimal values between 0.0007 and 0.4 were obtained for the threshold.
+Using both real and  simulated data, optimal values between 0.0007 and 0.4
+were obtained for the threshold.
 }
 \examples{
 #pre -filtering to remove lowly expressed genes
